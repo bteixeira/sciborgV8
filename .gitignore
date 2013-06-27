@@ -1,3 +1,10 @@
 # Linux backup files
 *~
 
+# Binaries
+sciborg
+*.o
+*.a
+
+# V8 source
+v8

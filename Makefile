@@ -1,5 +1,5 @@
 
-.SUFFIXES: .c .o .h .a
+.SUFFIXES: .cpp .o .h .a
 
 INCLUDEDIRS=-Iscintilla/include -Iv8/include
 CXXFLAGS= -DGTK -DSCI_LEXER -W -Wall
@@ -7,10 +7,10 @@ LEXEROBJS=$(wildcard scintilla/gtk/Lex*.o)
 
 all: sciborg
 
-.c.o:
+.cpp.o:
 	g++ `pkg-config --cflags gtk+-2.0` $(INCLUDEDIRS) $(CXXFLAGS) -c $< -o $@
 sciborg: sciborg.o $(LEXEROBJS) scintilla/bin/scintilla.a
-	g++ -DGTK $^ -o $@ v8/out/x64.release/obj.target/tools/gyp/libv8_base.x64.a v8/out/x64.release/obj.target/tools/gyp/libv8_snapshot.a -lpthread -lstdc++ `pkg-config --libs gtk+-2.0 gthread-2.0`
+	g++ -DGTK $^ -o $@ v8/out/native/obj.target/tools/gyp/libv8_base.x64.a v8/out/native/obj.target/tools/gyp/libv8_snapshot.a -lpthread -lstdc++ `pkg-config --libs gtk+-2.0 gthread-2.0`
 clean: clean-scintilla clean-v8
 	rm -rf sciborg *.o
 
