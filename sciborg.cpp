@@ -11,6 +11,8 @@
 
 #define SSM(m, w, l) scintilla_send_message(sci, m, w, l)
 
+v8::Handle<v8::Script> readFromFile(char* filename);
+
 static int exit_app(GtkWidget*w, GdkEventAny*e, gpointer p) {
    gtk_main_quit();
    return w||e||p||1;	// Avoid warnings
@@ -55,18 +57,8 @@ int main(int argc, char **argv) {
 
 
 /********************/
-// PARSING JS FILE
-	FILE *f = fopen("/home/bruno/projects/jstextedit/cfg.js", "r");
-	fseek(f, 0, SEEK_END);
-	long fsize = ftell(f);
-	fseek(f, 0, SEEK_SET);
 
-	char *string = (char*) malloc(fsize + 1);
-	fread(string, fsize, 1, f);
-	fclose(f);
-
-	string[fsize] = 0;
-	printf("contents: %s\n", string);
+	
 	
 	v8::Isolate* isolate = v8::Isolate::GetCurrent();
 	v8::HandleScope handle_scope(isolate);
@@ -109,8 +101,7 @@ int main(int argc, char **argv) {
 	context = v8::Context::New(isolate, NULL, global);
 	v8::Context::Scope context_scope(context);
 	
-	v8::Handle<v8::String> source = v8::String::New(string);
-	v8::Handle<v8::Script> script = v8::Script::Compile(source);
+	v8::Handle<v8::Script> script = readFromFile("/home/bruno/projects/jstextedit/cfg.js");
 	v8::Handle<v8::Value> result = script->Run();
 	v8::Local<v8::Value> stuff = context->Global()->Get(v8::String::New("background"));
 	
@@ -118,28 +109,26 @@ int main(int argc, char **argv) {
 	v8::String::AsciiValue ascii2(stuff);
     printf("%s\n", *ascii2);
 
-/*
-   SSM(SCI_STYLECLEARALL, 0, 0);
-   SSM(SCI_SETLEXER, SCLEX_CPP, 0);
-   SSM(SCI_SETKEYWORDS, 0, (sptr_t)"int char");
-   SSM(SCI_STYLESETFORE, SCE_C_COMMENT, 0x008000);
-   SSM(SCI_STYLESETFORE, SCE_C_COMMENTLINE, 0x008000);
-   SSM(SCI_STYLESETFORE, SCE_C_NUMBER, 0x808000);
-   SSM(SCI_STYLESETFORE, SCE_C_WORD, 0x800000);
-   SSM(SCI_STYLESETFORE, SCE_C_STRING, 0x800080);
-   SSM(SCI_STYLESETBOLD, SCE_C_OPERATOR, 1);
-   SSM(SCI_INSERTTEXT, 0, (sptr_t)
-    "int main(int argc, char **argv) {\n"
-    "    // Start up the gnome!\n"
-    "    gnome_init(\"stest\", \"1.0\", argc, argv);\n}"
-   );
-   */
-   //SSM(SCI_STYLESETBACK, 0, 0xDDDDDD);
-   //SSM(SCI_STYLESETBACK, 0, atoi(*ascii2));
-
    gtk_widget_show_all(app);
    gtk_widget_grab_focus(GTK_WIDGET(editor));
    gtk_main();
 
    return 0;
+}
+
+v8::Handle<v8::Script> readFromFile(char* filename) {
+	// PARSING JS FILE
+	FILE *f = fopen(filename, "r");
+	fseek(f, 0, SEEK_END);
+	long fsize = ftell(f);
+	fseek(f, 0, SEEK_SET);
+
+	char *string = (char*) malloc(fsize + 1);
+	fread(string, fsize, 1, f);
+	fclose(f);
+
+	string[fsize] = 0;
+	printf("contents: %s\n", string);
+	v8::Handle<v8::String> source = v8::String::New(string);
+	return v8::Script::Compile(source);
 }
