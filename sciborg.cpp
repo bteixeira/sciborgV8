@@ -21,9 +21,9 @@ static int exit_app(GtkWidget*w, GdkEventAny*e, gpointer p) {
 static void testMe(const v8::FunctionCallbackInfo<v8::Value>& args) {
 	printf("ping!\n");
 }
+
 ScintillaObject *sci;
 static void SEND_SCI_STYLESETBACK(const v8::FunctionCallbackInfo<v8::Value>& args) {
-	//printf("it works!\n");
 	v8::Handle<v8::Value> arg = args[0];
 	SSM(SCI_STYLESETBACK, 0, arg->Int32Value());
 }
@@ -39,44 +39,35 @@ static void handleCA(GtkWidget *, void *object) {
 
 int main(int argc, char **argv) {
 
-   GtkWidget *app;
-   GtkWidget *editor;
+	GtkWidget *app;
+	GtkWidget *editor;
 
-   gtk_init(&argc, &argv);
-   app = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-   editor = scintilla_new();
-   sci = SCINTILLA(editor);
+	gtk_init(&argc, &argv);
+	app = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	editor = scintilla_new();
+	sci = SCINTILLA(editor);
 
-   gtk_container_add(GTK_CONTAINER(app), editor);
-   gtk_signal_connect(GTK_OBJECT(app), "delete_event",
-	   GTK_SIGNAL_FUNC(exit_app), 0);
+	gtk_container_add(GTK_CONTAINER(app), editor);
+	gtk_signal_connect(GTK_OBJECT(app), "delete_event", GTK_SIGNAL_FUNC(exit_app), 0);
 
-   scintilla_set_id(sci, 0);
-   gtk_widget_set_usize(editor, 500, 300);
+	scintilla_set_id(sci, 0);
+	gtk_widget_set_usize(editor, 500, 300);
 
-
-
-/********************/
-
-	
-	
 	v8::Isolate* isolate = v8::Isolate::GetCurrent();
 	v8::HandleScope handle_scope(isolate);
-	
+
 	v8::Handle<v8::ObjectTemplate> global = v8::ObjectTemplate::New();
-    global->Set(v8::String::New("testMe"), v8::FunctionTemplate::New(testMe));
-    global->Set(v8::String::New("SEND_SCI_STYLESETBACK"), v8::FunctionTemplate::New(SEND_SCI_STYLESETBACK));
-    /*
-    void Attach(GtkWidget *w, CommandHandler *object, const char *sigName="clicked") {
+	global->Set(v8::String::New("testMe"), v8::FunctionTemplate::New(testMe));
+	global->Set(v8::String::New("SEND_SCI_STYLESETBACK"), v8::FunctionTemplate::New(SEND_SCI_STYLESETBACK));
+	/*
+	void Attach(GtkWidget *w, CommandHandler *object, const char *sigName="clicked") {
 		g_signal_connect(G_OBJECT(w), sigName, G_CALLBACK(Function), object);
 	}
 	static void Function(GtkWidget *, CommandHandler *object) {
 		object->PerformCommand(commandNumber);
 	}
 	*/
-	//int total;
-	//g_signal_list_ids (editor, &total);
-	/* WORKS!!!!!! */
+
 	/* WORKS!!!!!! */
 	/* WORKS!!!!!! */
 	/* WORKS!!!!!! */
@@ -88,32 +79,29 @@ int main(int argc, char **argv) {
 	/* WORKS!!!!!! */
 	/* WORKS!!!!!! */
 	/* WORKS!!!!!! */
-	/* WORKS!!!!!! */
-	
-	
+
 	/*
 	g_signal_connect(G_OBJECT(PWidget(wEditor)), SCINTILLA_NOTIFY,
-	                   G_CALLBACK(NotifySignal), this);
-    g_signal_connect(G_OBJECT(PWidget(wOutput)), SCINTILLA_NOTIFY,
-	                   G_CALLBACK(NotifySignal), this);
+		               G_CALLBACK(NotifySignal), this);
+	g_signal_connect(G_OBJECT(PWidget(wOutput)), SCINTILLA_NOTIFY,
+		               G_CALLBACK(NotifySignal), this);
 	*/
-	
+
 	context = v8::Context::New(isolate, NULL, global);
 	v8::Context::Scope context_scope(context);
-	
-	v8::Handle<v8::Script> script = readFromFile("/home/bruno/projects/jstextedit/cfg.js");
+
+	v8::Handle<v8::Script> script = readFromFile("~/.sciborg.js");
 	v8::Handle<v8::Value> result = script->Run();
 	v8::Local<v8::Value> stuff = context->Global()->Get(v8::String::New("background"));
-	
-	
+
 	v8::String::AsciiValue ascii2(stuff);
-    printf("%s\n", *ascii2);
+	printf("%s\n", *ascii2);
 
-   gtk_widget_show_all(app);
-   gtk_widget_grab_focus(GTK_WIDGET(editor));
-   gtk_main();
+	gtk_widget_show_all(app);
+	gtk_widget_grab_focus(GTK_WIDGET(editor));
+	gtk_main();
 
-   return 0;
+	return 0;
 }
 
 v8::Handle<v8::Script> readFromFile(char* filename) {
@@ -132,3 +120,4 @@ v8::Handle<v8::Script> readFromFile(char* filename) {
 	v8::Handle<v8::String> source = v8::String::New(string);
 	return v8::Script::Compile(source);
 }
+
