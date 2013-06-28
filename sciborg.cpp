@@ -30,11 +30,15 @@ static void SEND_SCI_STYLESETBACK(const v8::FunctionCallbackInfo<v8::Value>& arg
 
 v8::Handle<v8::Context> context;
 
-static void handleCA(GtkWidget *, void *object) {
-	//printf("it works!!!!111\n");
-	v8::Handle<v8::Value> onSignalVal = context->Global()->Get(v8::String::New("onSignal"));
-	v8::Handle<v8::Function> onSignal = v8::Handle<v8::Function>::Cast(onSignalVal);
-	onSignal->Call(context->Global(), 0, NULL);
+static void handleCA(GtkWidget *, gint /*wParam*/, SCNotification *lParam, void *data) {
+	if (lParam->nmhdr.code == SCN_PAINTED) {
+		/* Nothing, I guess */
+	} else if (lParam->nmhdr.code == SCN_CHARADDED) {
+		printf("HANDLING: %d\n", lParam->nmhdr.code);
+		v8::Handle<v8::Value> onSignalVal = context->Global()->Get(v8::String::New("onSignal"));
+		v8::Handle<v8::Function> onSignal = v8::Handle<v8::Function>::Cast(onSignalVal);
+		onSignal->Call(context->Global(), 0, NULL);
+	}
 }
 
 int main(int argc, char **argv) {
@@ -90,7 +94,7 @@ int main(int argc, char **argv) {
 	context = v8::Context::New(isolate, NULL, global);
 	v8::Context::Scope context_scope(context);
 
-	v8::Handle<v8::Script> script = readFromFile("~/.sciborg.js");
+	v8::Handle<v8::Script> script = readFromFile("./.sciborg.js");
 	v8::Handle<v8::Value> result = script->Run();
 	v8::Local<v8::Value> stuff = context->Global()->Get(v8::String::New("background"));
 
