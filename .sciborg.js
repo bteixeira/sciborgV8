@@ -12,7 +12,9 @@ function onSignal() {
 
 testMe();
 
+/**/
 on('charAdded', function() {
 	testMe();
 });
+/**/
 

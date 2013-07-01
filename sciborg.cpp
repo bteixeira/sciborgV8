@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <map>
+#include <string>
 
 #define SSM(m, w, l) scintilla_send_message(sci, m, w, l)
 
@@ -42,32 +43,22 @@ static void SEND_SCI_STYLESETBACK(const v8::FunctionCallbackInfo<v8::Value>& arg
 	SSM(SCI_STYLESETBACK, 0, arg->Int32Value());
 }
 
-
+static std::map<int, std::string> signals;
 
 static void handleCA(GtkWidget *, gint /*wParam*/, SCNotification *notification, void *data) {
 	int code = notification->nmhdr.code;
-	if (code == SCN_PAINTED) {
-		/* Nothing, I guess */
-	} else if (code == SCN_CHARADDED) {
-		//printf("HANDLING: %d\n", code);
-		//if (!charAddedHandler.IsEmpty()) {
-			//printf("we have a handler, calling it\n");
-			//v8::Handle<v8::Value> onSignalVal = context->Global()->Get(v8::String::New("onSignal"));
-			//charAddedHandler = v8::Handle<v8::Function>::Cast(onSignalVal);
-			v8::Local<v8::Object> global = context->Global();
-			//printf("empty global? %d\n", global.IsEmpty());
-			//printf("handler is fun? %d\n", charAddedHandler->IsFunction());
-			v8::Persistent<v8::Function> charAddedHandler = handlers.at("charAdded");
-			charAddedHandler->Call(global, 0, NULL);
-		/*
-		} else {
-			printf("no handler\n");
-		}
-		*/
-	}
+	std::string signal = signals[code];
+    if (!signal.empty()) {
+        std::cout << "Calling handler for " << signal << "! (if any)\n";
+        v8::Persistent<v8::Function> handler = handlers.at(signal);
+        v8::Local<v8::Object> global = context->Global();
+        handler->Call(global, 0, NULL);
+    }
 }
 
 int main(int argc, char **argv) {
+
+    signals[SCN_CHARADDED] = "charAdded";
 
 	GtkWidget *app;
 	GtkWidget *editor;
