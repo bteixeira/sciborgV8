@@ -8,6 +8,8 @@
 #include <v8.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <iostream>
+#include <map>
 
 #define SSM(m, w, l) scintilla_send_message(sci, m, w, l)
 
@@ -25,10 +27,13 @@ static void testMe(const v8::FunctionCallbackInfo<v8::Value>& args) {
 	printf("ping!\n");
 }
 
-v8::Persistent<v8::Function> charAddedHandler;
+std::map<std::string, v8::Persistent<v8::Function> > handlers;
+
 static void setHandler(const v8::FunctionCallbackInfo<v8::Value>& args) {
-	printf("setting handler!\n");
-	charAddedHandler = v8::Persistent<v8::Function>::New(v8::Handle<v8::Function>::Cast(args[0]));
+	v8::String::AsciiValue ascii2(args[0]);
+	printf("setting handler for: %s\n", *ascii2);
+	v8::Persistent<v8::Function> charAddedHandler = v8::Persistent<v8::Function>::New(v8::Handle<v8::Function>::Cast(args[1]));
+	handlers[*ascii2] = charAddedHandler;
 }
 
 ScintillaObject *sci;
@@ -45,17 +50,20 @@ static void handleCA(GtkWidget *, gint /*wParam*/, SCNotification *notification,
 		/* Nothing, I guess */
 	} else if (code == SCN_CHARADDED) {
 		//printf("HANDLING: %d\n", code);
-		if (!charAddedHandler.IsEmpty()) {
-			printf("we have a handler, calling it\n");
+		//if (!charAddedHandler.IsEmpty()) {
+			//printf("we have a handler, calling it\n");
 			//v8::Handle<v8::Value> onSignalVal = context->Global()->Get(v8::String::New("onSignal"));
 			//charAddedHandler = v8::Handle<v8::Function>::Cast(onSignalVal);
 			v8::Local<v8::Object> global = context->Global();
 			//printf("empty global? %d\n", global.IsEmpty());
 			//printf("handler is fun? %d\n", charAddedHandler->IsFunction());
+			v8::Persistent<v8::Function> charAddedHandler = handlers.at("charAdded");
 			charAddedHandler->Call(global, 0, NULL);
+		/*
 		} else {
 			printf("no handler\n");
 		}
+		*/
 	}
 }
 
@@ -81,7 +89,7 @@ int main(int argc, char **argv) {
 	v8::Handle<v8::ObjectTemplate> global = v8::ObjectTemplate::New();
 	global->Set(v8::String::New("testMe"), v8::FunctionTemplate::New(testMe));
 	global->Set(v8::String::New("SEND_SCI_STYLESETBACK"), v8::FunctionTemplate::New(SEND_SCI_STYLESETBACK));
-	global->Set(v8::String::New("setHandler"), v8::FunctionTemplate::New(setHandler));
+	global->Set(v8::String::New("on"), v8::FunctionTemplate::New(setHandler));
 
 	g_signal_connect(editor, SCINTILLA_NOTIFY, G_CALLBACK(handleCA), NULL);
 
