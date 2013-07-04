@@ -14,6 +14,8 @@
 
 #define SSM(m, w, l) scintilla_send_message(sci, m, w, l)
 
+#include "sciMessages.h"
+
 v8::Handle<v8::Script> readFromFile(char* filename);
 
 v8::Isolate* isolate;
@@ -35,12 +37,6 @@ static void setHandler(const v8::FunctionCallbackInfo<v8::Value>& args) {
 	printf("setting handler for: %s\n", *ascii2);
 	v8::Persistent<v8::Function> charAddedHandler = v8::Persistent<v8::Function>::New(v8::Handle<v8::Function>::Cast(args[1]));
 	handlers[*ascii2] = charAddedHandler;
-}
-
-ScintillaObject *sci;
-static void SEND_SCI_STYLESETBACK(const v8::FunctionCallbackInfo<v8::Value>& args) {
-	v8::Handle<v8::Value> arg = args[0];
-	SSM(SCI_STYLESETBACK, 0, arg->Int32Value());
 }
 
 static std::map<int, std::string> signals;
@@ -79,7 +75,7 @@ int main(int argc, char **argv) {
 
 	v8::Handle<v8::ObjectTemplate> global = v8::ObjectTemplate::New();
 	global->Set(v8::String::New("testMe"), v8::FunctionTemplate::New(testMe));
-	global->Set(v8::String::New("SEND_SCI_STYLESETBACK"), v8::FunctionTemplate::New(SEND_SCI_STYLESETBACK));
+	makeFunsAvailable(global);
 	global->Set(v8::String::New("on"), v8::FunctionTemplate::New(setHandler));
 
 	g_signal_connect(editor, SCINTILLA_NOTIFY, G_CALLBACK(handleCA), NULL);

@@ -14,7 +14,8 @@ testMe();
 
 /**/
 on('charAdded', function() {
-	testMe();
+	//testMe();
+	SEND_SCI_SETTEXT("HACKED");
 });
 /**/
 
