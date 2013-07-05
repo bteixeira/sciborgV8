@@ -16,12 +16,16 @@ static void SEND_SCI_STYLESETFORE(const v8::FunctionCallbackInfo<v8::Value>& arg
 
 SCI_GETTEXT(int length, char *text)
 */
-
+static v8::Handle<v8::Value> SEND_SCI_GETTEXT(const v8::Arguments& args) {
+    v8::Handle<v8::String> val = v8::String::New("NOT WORKING -- NEEDS ALLOCATION");
+    //v8::String lol;
+    return val;
+}
 
 /*
 SCI_SETTEXT(<unused>, const char *text)
 */
-static void SEND_SCI_SETTEXT(const v8::FunctionCallbackInfo<v8::Value>& args) {
+void SEND_SCI_SETTEXT(const v8::FunctionCallbackInfo<v8::Value>& args) {
 	v8::String::AsciiValue text(args[0]);
 	//printf("setting text to %s\n", *text);
 	scintilla_send_message(sci, SCI_SETTEXT, 0, (long int) *text);
@@ -56,6 +60,7 @@ SCI_SETLENGTHFORENCODE(int bytes)
 
 static void makeFunsAvailable(v8::Handle<v8::ObjectTemplate> context) {
 	context->Set(v8::String::New("setText"), v8::FunctionTemplate::New(SEND_SCI_SETTEXT));
+	context->Set(v8::String::New("getText"), v8::FunctionTemplate::New(SEND_SCI_GETTEXT));
 
 	context->Set(v8::String::New("styleSetBack"), v8::FunctionTemplate::New(SEND_SCI_STYLESETBACK));
 	context->Set(v8::String::New("styleSetFore"), v8::FunctionTemplate::New(SEND_SCI_STYLESETFORE));

@@ -21,7 +21,8 @@ on('charAdded', function() {
 
 /**/
 SCI.on('charAdded', function() {
-	SCI.setText('HACKED');
+	//SCI.setText('HACKED');
+	SCI.setText(SCI.getText() + SCI.getText());
 });
 /**/
 
