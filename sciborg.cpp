@@ -74,9 +74,13 @@ int main(int argc, char **argv) {
 	v8::HandleScope handle_scope(isolate);
 
 	v8::Handle<v8::ObjectTemplate> global = v8::ObjectTemplate::New();
+
+	v8::Handle<v8::ObjectTemplate> sciObj = v8::ObjectTemplate::New();
+
 	global->Set(v8::String::New("testMe"), v8::FunctionTemplate::New(testMe));
-	makeFunsAvailable(global);
-	global->Set(v8::String::New("on"), v8::FunctionTemplate::New(setHandler));
+	global->Set(v8::String::New("SCI"), sciObj);
+	makeFunsAvailable(sciObj);
+	sciObj->Set(v8::String::New("on"), v8::FunctionTemplate::New(setHandler));
 
 	g_signal_connect(editor, SCINTILLA_NOTIFY, G_CALLBACK(handleCA), NULL);
 

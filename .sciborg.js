@@ -12,10 +12,16 @@ function onSignal() {
 
 testMe();
 
-/**/
+/**
 on('charAdded', function() {
 	//testMe();
-	SEND_SCI_SETTEXT("HACKED");
+	SCI.SEND_SCI_SETTEXT("HACKED");
+});
+/**/
+
+/**/
+SCI.on('charAdded', function() {
+	SCI.setText('HACKED');
 });
 /**/
 

@@ -54,9 +54,9 @@ SCI_ENCODEDFROMUTF8(const char *utf8, char *encoded)
 SCI_SETLENGTHFORENCODE(int bytes)
 */
 
-static void makeFunsAvailable(v8::Handle<v8::ObjectTemplate> global) {
-	global->Set(v8::String::New("SEND_SCI_SETTEXT"), v8::FunctionTemplate::New(SEND_SCI_SETTEXT));
+static void makeFunsAvailable(v8::Handle<v8::ObjectTemplate> context) {
+	context->Set(v8::String::New("setText"), v8::FunctionTemplate::New(SEND_SCI_SETTEXT));
 
-	global->Set(v8::String::New("SEND_SCI_STYLESETBACK"), v8::FunctionTemplate::New(SEND_SCI_STYLESETBACK));
-	global->Set(v8::String::New("SEND_SCI_STYLESETFORE"), v8::FunctionTemplate::New(SEND_SCI_STYLESETBACK));
+	context->Set(v8::String::New("styleSetBack"), v8::FunctionTemplate::New(SEND_SCI_STYLESETBACK));
+	context->Set(v8::String::New("styleSetFore"), v8::FunctionTemplate::New(SEND_SCI_STYLESETFORE));
 }
