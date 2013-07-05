@@ -27,3 +27,8 @@ SCI.on('charAdded', function() {
 /**/
 
 SCI.setLexer(3);
+SCI.setText('a');
+SCI.setKeywords('var function if while do throw for');
+SCI.styleSetFore(5, 0x00FF00);
+SCI.setText('function() {\n\tvar x;\n\treturn 0;\n}\n');
+

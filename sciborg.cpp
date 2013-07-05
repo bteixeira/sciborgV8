@@ -89,10 +89,10 @@ int main(int argc, char **argv) {
 
 	v8::Handle<v8::Script> script = readFromFile("./.sciborg.js");
 	v8::Handle<v8::Value> result = script->Run();
-	v8::Local<v8::Value> stuff = context->Global()->Get(v8::String::New("background"));
+	//v8::Local<v8::Value> stuff = context->Global()->Get(v8::String::New("background"));
 
-	v8::String::AsciiValue ascii2(stuff);
-	printf("%s\n", *ascii2);
+	//v8::String::AsciiValue ascii2(stuff);
+	//printf("%s\n", *ascii2);
 
 	gtk_widget_show_all(app);
 	gtk_widget_grab_focus(GTK_WIDGET(editor));
