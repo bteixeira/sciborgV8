@@ -19,10 +19,11 @@ on('charAdded', function() {
 });
 /**/
 
-/**/
+/**
 SCI.on('charAdded', function() {
 	//SCI.setText('HACKED');
 	SCI.setText(SCI.getText() + SCI.getText());
 });
 /**/
 
+SCI.setLexer(3);
