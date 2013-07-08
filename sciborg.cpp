@@ -12,8 +12,6 @@
 #include <map>
 #include <string>
 
-#define SSM(m, w, l) scintilla_send_message(sci, m, w, l)
-
 #include "sciMessages.h"
 
 v8::Handle<v8::Script> readFromFile(char* filename);

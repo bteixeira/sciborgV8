@@ -70,7 +70,6 @@ SCI_SETCARETLINEBACK(int colour)
 SCI_SETCARETLINEBACKALPHA(int alpha)
 
 SCI_SETCARETPERIOD(int milliseconds)
-SCI_SETCARETSTYLE(int style)
 SCI_SETCARETWIDTH(int pixels)
 
 */
@@ -83,6 +82,11 @@ static v8::Handle<v8::Value> SEND_SCI_SETCARETFORE(const v8::Arguments& args) {
 static v8::Handle<v8::Value> SEND_SCI_SETCARETSTYLE(const v8::Arguments& args) {
     int style = args[0]->Int32Value();
 	scintilla_send_message(sci, SCI_SETCARETSTYLE, style, 0);
+}
+
+static v8::Handle<v8::Value> SEND_SCI_SETCARETPERIOD(const v8::Arguments& args) {
+    int millis = args[0]->Int32Value();
+	scintilla_send_message(sci, SCI_SETCARETPERIOD, millis, 0);
 }
 
 /******************************************************************************/
@@ -102,7 +106,7 @@ static void makeFunsAvailable(v8::Handle<v8::ObjectTemplate> context) {
 //	context->Set(v8::String::New("SCI_SETCARETFORE"), v8::FunctionTemplate::New(SEND_SCI_SETCARETFORE));
 //	context->Set(v8::String::New("SCI_SETCARETFORE"), v8::FunctionTemplate::New(SEND_SCI_SETCARETFORE));
 //	context->Set(v8::String::New("SCI_SETCARETFORE"), v8::FunctionTemplate::New(SEND_SCI_SETCARETFORE));
-//	context->Set(v8::String::New("SCI_SETCARETFORE"), v8::FunctionTemplate::New(SEND_SCI_SETCARETFORE));
+	context->Set(v8::String::New("setCaretPeriod"), v8::FunctionTemplate::New(SEND_SCI_SETCARETPERIOD));
 	context->Set(v8::String::New("setCaretStyle"), v8::FunctionTemplate::New(SEND_SCI_SETCARETSTYLE));
 //	context->Set(v8::String::New("SCI_SETCARETFORE"), v8::FunctionTemplate::New(SEND_SCI_SETCARETFORE));
 

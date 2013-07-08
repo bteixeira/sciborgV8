@@ -21,4 +21,5 @@ SCI.setText('function() {\n\tvar x;\n\treturn 0;\n}\n');
 
 SCI.setCaretFore(0x00FF00);
 SCI.setCaretStyle(2);
+SCI.setCaretPeriod(0);
 
