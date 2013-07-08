@@ -57,6 +57,36 @@ static v8::Handle<v8::Value> SEND_SCI_SETKEYWORDS(const v8::Arguments& args) {
 
 /******************************************************************************/
 
+/*
+
+SCI_SETREADONLY(bool readOnly)
+
+*/
+
+/*
+
+SCI_SETCARETLINEVISIBLE(bool show)
+SCI_SETCARETLINEBACK(int colour)
+SCI_SETCARETLINEBACKALPHA(int alpha)
+
+SCI_SETCARETPERIOD(int milliseconds)
+SCI_SETCARETSTYLE(int style)
+SCI_SETCARETWIDTH(int pixels)
+
+*/
+
+static v8::Handle<v8::Value> SEND_SCI_SETCARETFORE(const v8::Arguments& args) {
+    int color = args[0]->Int32Value();
+	scintilla_send_message(sci, SCI_SETCARETFORE, color, 0);
+}
+
+static v8::Handle<v8::Value> SEND_SCI_SETCARETSTYLE(const v8::Arguments& args) {
+    int style = args[0]->Int32Value();
+	scintilla_send_message(sci, SCI_SETCARETSTYLE, style, 0);
+}
+
+/******************************************************************************/
+
 static void makeFunsAvailable(v8::Handle<v8::ObjectTemplate> context) {
 	context->Set(v8::String::New("setText"), v8::FunctionTemplate::New(SEND_SCI_SETTEXT));
 	context->Set(v8::String::New("getText"), v8::FunctionTemplate::New(SEND_SCI_GETTEXT));
@@ -65,6 +95,16 @@ static void makeFunsAvailable(v8::Handle<v8::ObjectTemplate> context) {
 	context->Set(v8::String::New("styleSetBack"), v8::FunctionTemplate::New(SEND_SCI_STYLESETBACK));
 	context->Set(v8::String::New("styleSetFore"), v8::FunctionTemplate::New(SEND_SCI_STYLESETFORE));
 	context->Set(v8::String::New("styleSetFont"), v8::FunctionTemplate::New(SEND_SCI_STYLESETFONT));
+
+//	context->Set(v8::String::New("SCI_SETCARETFORE"), v8::FunctionTemplate::New(SEND_SCI_SETCARETFORE));
+
+	context->Set(v8::String::New("setCaretFore"), v8::FunctionTemplate::New(SEND_SCI_SETCARETFORE));
+//	context->Set(v8::String::New("SCI_SETCARETFORE"), v8::FunctionTemplate::New(SEND_SCI_SETCARETFORE));
+//	context->Set(v8::String::New("SCI_SETCARETFORE"), v8::FunctionTemplate::New(SEND_SCI_SETCARETFORE));
+//	context->Set(v8::String::New("SCI_SETCARETFORE"), v8::FunctionTemplate::New(SEND_SCI_SETCARETFORE));
+//	context->Set(v8::String::New("SCI_SETCARETFORE"), v8::FunctionTemplate::New(SEND_SCI_SETCARETFORE));
+	context->Set(v8::String::New("setCaretStyle"), v8::FunctionTemplate::New(SEND_SCI_SETCARETSTYLE));
+//	context->Set(v8::String::New("SCI_SETCARETFORE"), v8::FunctionTemplate::New(SEND_SCI_SETCARETFORE));
 
 	context->Set(v8::String::New("setLexer"), v8::FunctionTemplate::New(SEND_SCI_SETLEXER));
 	context->Set(v8::String::New("setKeywords"), v8::FunctionTemplate::New(SEND_SCI_SETKEYWORDS));
