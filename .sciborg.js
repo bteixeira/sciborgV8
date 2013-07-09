@@ -3,8 +3,15 @@
 SCI.on('charAdded', function(char) {
 	//SCI.setText('HACKED');
 	//SCI.setText(SCI.getText() + SCI.getText());
-	log(char);
-	if (char === 83) {
+	Util.log(char);
+});
+
+SCI.on('key', function(key, mod) {
+	//SCI.setText('HACKED');
+	//SCI.setText(SCI.getText() + SCI.getText());
+	Util.log("key: " + key);
+	Util.log("mod: " + mod);
+	if (key === 83 && mod === 2) {
 		Util.save();
 	}
 });

@@ -9,10 +9,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
+#include <fstream>
 #include <map>
 #include <string>
 
 #include "sciMessages.h"
+
+char* filename;
 
 v8::Handle<v8::Script> readFromFile(char* filename);
 
@@ -39,7 +42,24 @@ static void setHandler(const v8::FunctionCallbackInfo<v8::Value>& args) {
 }
 
 static void saveIt(const v8::FunctionCallbackInfo<v8::Value>& args) {
-	std::cout << "this should save the file...\n";
+    if (filename != NULL) {
+        std::cout << "this should save the file to " << filename << " ...\n";
+
+        int n = scintilla_send_message(sci, SCI_GETLENGTH, 0, 0);
+        std::cout << "text length should be " << n << "\n";
+
+        char* contents = (char*) malloc(n + 1);
+        scintilla_send_message(sci, SCI_GETTEXT, n + 1, (sptr_t) contents);
+        std::cout << "text contents should be " << contents << "\n";
+
+        std::ofstream myfile;
+        myfile.open (filename);
+        myfile << contents;
+        myfile.close();
+        free(contents);
+    } else {
+        std::cout << "tried to save but there is no filename\n";
+    }
 }
 
 static std::map<int, std::string> signals;
@@ -51,9 +71,10 @@ static void handleSCISignal(GtkWidget *, gint /*wParam*/, SCNotification *notifi
         std::cout << "Calling handler for " << signal << "! (if any)\n";
         v8::Persistent<v8::Function> handler = handlers.at(signal);
         v8::Local<v8::Object> global = context->Global();
-        v8::Handle<v8::Value> args[1];
+        v8::Handle<v8::Value> args[2];
         args[0] = v8::Number::New(notification->ch);
-        handler->Call(global, 1, args);
+        args[1] = v8::Number::New(notification->modifiers);
+        handler->Call(global, 2, args);
     }
 }
 
@@ -61,6 +82,7 @@ int main(int argc, char **argv) {
 
     /* TODO Take this out of here */
     signals[SCN_CHARADDED] = "charAdded";
+    signals[SCN_KEY] = "key";
 
 	GtkWidget *app;
 	GtkWidget *editor;
@@ -99,7 +121,6 @@ int main(int argc, char **argv) {
 	gtk_widget_set_usize(pane, 500, 20);
 
 	/***************/
-	char* filename = "[new file]";
 	/* Try reading a file */
 	if (argc > 1) {
 	    filename = argv[1];
@@ -117,10 +138,12 @@ int main(int argc, char **argv) {
 
         string[fsize] = 0;
         scintilla_send_message(sci, SCI_INSERTTEXT, 0, (sptr_t) string);
+        scintilla_send_message(sci2, SCI_INSERTTEXT, 0, (sptr_t) filename);
 	} else {
 	    std::cout << "No filename passed\n";
+	    scintilla_send_message(sci2, SCI_INSERTTEXT, 0, (sptr_t) "[new file]");
 	}
-	scintilla_send_message(sci2, SCI_INSERTTEXT, 0, (sptr_t) filename);
+
 	scintilla_send_message(sci2, SCI_SETREADONLY, 1, 0);
 	/***************/
 
