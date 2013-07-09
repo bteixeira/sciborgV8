@@ -24,8 +24,9 @@ static int exit_app(GtkWidget*w, GdkEventAny*e, gpointer p) {
    return w||e||p||1;	// Avoid warnings
 }
 
-static void testMe(const v8::FunctionCallbackInfo<v8::Value>& args) {
-	printf("ping!\n");
+static void log(const v8::FunctionCallbackInfo<v8::Value>& args) {
+	v8::String::AsciiValue what(args[0]);
+	std::cout << ">>> " << *what << "\n";
 }
 
 std::map<std::string, v8::Persistent<v8::Function> > handlers;
@@ -124,7 +125,7 @@ int main(int argc, char **argv) {
 
 	v8::Handle<v8::ObjectTemplate> sciObj = v8::ObjectTemplate::New();
 
-	global->Set(v8::String::New("testMe"), v8::FunctionTemplate::New(testMe));
+	global->Set(v8::String::New("log"), v8::FunctionTemplate::New(log));
 	global->Set(v8::String::New("SCI"), sciObj);
 	makeFunsAvailable(sciObj);
 	sciObj->Set(v8::String::New("on"), v8::FunctionTemplate::New(setHandler));

@@ -1,8 +1,9 @@
 
-/**
-SCI.on('charAdded', function() {
+/**/
+SCI.on('charAdded', function(char) {
 	//SCI.setText('HACKED');
-	SCI.setText(SCI.getText() + SCI.getText());
+	//SCI.setText(SCI.getText() + SCI.getText());
+	log(char);
 });
 /**/
 /**/
@@ -13,7 +14,7 @@ SCI.styleSetFont(32, 'monospace');
 SCI.styleSetFore(32, 0xFFFFFF);
 SCI.styleSetBack(32, 0x444444);
 SCI.styleClearAll();
-SCI.setKeywords('var function if while do throw for');
+//SCI.setKeywords('var function if while do throw for');
 SCI.styleSetFore(5, 0xFF66FF);
 SCI.styleSetFont(0, 'monospace');
 SCI.styleSetFont(5, 'monospace');
