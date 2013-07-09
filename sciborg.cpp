@@ -47,7 +47,9 @@ static void handleCA(GtkWidget *, gint /*wParam*/, SCNotification *notification,
         std::cout << "Calling handler for " << signal << "! (if any)\n";
         v8::Persistent<v8::Function> handler = handlers.at(signal);
         v8::Local<v8::Object> global = context->Global();
-        handler->Call(global, 0, NULL);
+        v8::Handle<v8::Value> args[1];
+        args[0] = v8::Number::New(notification->ch);
+        handler->Call(global, 1, args);
     }
 }
 
