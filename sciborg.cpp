@@ -50,8 +50,6 @@ static void handleCA(GtkWidget *, gint /*wParam*/, SCNotification *notification,
     }
 }
 
-static const char info[] = "info";
-
 int main(int argc, char **argv) {
 
     /* TODO Take this out of here */
@@ -84,18 +82,16 @@ int main(int argc, char **argv) {
 	gtk_fixed_put(GTK_FIXED(layout), pane, 0, 0);
 	scintilla_set_id(sci2, 1);
 
+	scintilla_send_message(sci2, SCI_SETWRAPMODE, 2, 0);
+
     scintilla_send_message(sci2, SCI_STYLECLEARALL, 0, 0);
-    scintilla_send_message(sci2, SCI_SETLEXER, SCLEX_CPP, 0);
 
-    scintilla_send_message(sci2, SCI_SETKEYWORDS, 0, (sptr_t)"int char");
-    scintilla_send_message(sci2, SCI_STYLESETFORE, SCE_C_COMMENT, 0x008000);
-    scintilla_send_message(sci2, SCI_STYLESETFORE, SCE_C_COMMENTLINE, 0x008000);
-    scintilla_send_message(sci2, SCI_STYLESETFORE, SCE_C_NUMBER, 0x808000);
-    scintilla_send_message(sci2, SCI_STYLESETFORE, SCE_C_WORD, 0x800000);
-    scintilla_send_message(sci2, SCI_STYLESETFORE, SCE_C_STRING, 0x800080);
-    scintilla_send_message(sci2, SCI_STYLESETBOLD, SCE_C_OPERATOR, 1);
+    scintilla_send_message(sci2, SCI_STYLESETFONT, 0, (sptr_t) "monospace");
+    scintilla_send_message(sci2, SCI_STYLESETSIZE, 0, 10);
 
-    //scintilla_send_message(sci2, SCI_INSERTTEXT, 0, (sptr_t) info);
+    scintilla_send_message(sci2, SCI_INSERTTEXT, 0, (sptr_t) "[info]");
+
+    scintilla_send_message(sci2, SCI_SETREADONLY, 1, 0);
 
 	gtk_widget_set_usize(pane, 500, 20);
 
