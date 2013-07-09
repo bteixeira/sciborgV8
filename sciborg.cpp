@@ -50,8 +50,11 @@ static void handleCA(GtkWidget *, gint /*wParam*/, SCNotification *notification,
     }
 }
 
+static const char info[] = "info";
+
 int main(int argc, char **argv) {
 
+    /* TODO Take this out of here */
     signals[SCN_CHARADDED] = "charAdded";
 
 	GtkWidget *app;
@@ -62,11 +65,41 @@ int main(int argc, char **argv) {
 	editor = scintilla_new();
 	sci = SCINTILLA(editor);
 
-	gtk_container_add(GTK_CONTAINER(app), editor);
+    GtkWidget* layout = gtk_fixed_new();
+
+	gtk_container_add(GTK_CONTAINER(app), layout);
+	gtk_fixed_put(GTK_FIXED(layout), editor, 0, 20);
+
 	gtk_signal_connect(GTK_OBJECT(app), "delete_event", GTK_SIGNAL_FUNC(exit_app), 0);
 
 	scintilla_set_id(sci, 0);
 	gtk_widget_set_usize(editor, 500, 300);
+
+	/***************/
+	/* Try adding a new editor pane to the same window */
+
+    GtkWidget *pane;
+    pane = scintilla_new();
+	ScintillaObject *sci2 = SCINTILLA(pane);
+	gtk_fixed_put(GTK_FIXED(layout), pane, 0, 0);
+	scintilla_set_id(sci2, 1);
+
+    scintilla_send_message(sci2, SCI_STYLECLEARALL, 0, 0);
+    scintilla_send_message(sci2, SCI_SETLEXER, SCLEX_CPP, 0);
+
+    scintilla_send_message(sci2, SCI_SETKEYWORDS, 0, (sptr_t)"int char");
+    scintilla_send_message(sci2, SCI_STYLESETFORE, SCE_C_COMMENT, 0x008000);
+    scintilla_send_message(sci2, SCI_STYLESETFORE, SCE_C_COMMENTLINE, 0x008000);
+    scintilla_send_message(sci2, SCI_STYLESETFORE, SCE_C_NUMBER, 0x808000);
+    scintilla_send_message(sci2, SCI_STYLESETFORE, SCE_C_WORD, 0x800000);
+    scintilla_send_message(sci2, SCI_STYLESETFORE, SCE_C_STRING, 0x800080);
+    scintilla_send_message(sci2, SCI_STYLESETBOLD, SCE_C_OPERATOR, 1);
+
+    //scintilla_send_message(sci2, SCI_INSERTTEXT, 0, (sptr_t) info);
+
+	gtk_widget_set_usize(pane, 500, 20);
+
+	/***************/
 
 	isolate = v8::Isolate::GetCurrent();
 	v8::HandleScope handle_scope(isolate);
@@ -87,10 +120,6 @@ int main(int argc, char **argv) {
 
 	v8::Handle<v8::Script> script = readFromFile("./.sciborg.js");
 	v8::Handle<v8::Value> result = script->Run();
-	//v8::Local<v8::Value> stuff = context->Global()->Get(v8::String::New("background"));
-
-	//v8::String::AsciiValue ascii2(stuff);
-	//printf("%s\n", *ascii2);
 
 	gtk_widget_show_all(app);
 	gtk_widget_grab_focus(GTK_WIDGET(editor));
