@@ -89,12 +89,32 @@ int main(int argc, char **argv) {
     scintilla_send_message(sci2, SCI_STYLESETFONT, 0, (sptr_t) "monospace");
     scintilla_send_message(sci2, SCI_STYLESETSIZE, 0, 10);
 
-    scintilla_send_message(sci2, SCI_INSERTTEXT, 0, (sptr_t) "[info]");
-
-    scintilla_send_message(sci2, SCI_SETREADONLY, 1, 0);
-
 	gtk_widget_set_usize(pane, 500, 20);
 
+	/***************/
+	char* filename = "[new file]";
+	/* Try reading a file */
+	if (argc > 1) {
+	    filename = argv[1];
+
+	    std::cout << "Will read file '" << filename << "'\n";
+
+	    FILE *f = fopen(filename, "r");
+        fseek(f, 0, SEEK_END);
+        long fsize = ftell(f);
+        fseek(f, 0, SEEK_SET);
+
+        char *string = (char*) malloc(fsize + 1);
+        fread(string, fsize, 1, f);
+        fclose(f);
+
+        string[fsize] = 0;
+        scintilla_send_message(sci, SCI_INSERTTEXT, 0, (sptr_t) string);
+	} else {
+	    std::cout << "No filename passed\n";
+	}
+	scintilla_send_message(sci2, SCI_INSERTTEXT, 0, (sptr_t) filename);
+	scintilla_send_message(sci2, SCI_SETREADONLY, 1, 0);
 	/***************/
 
 	isolate = v8::Isolate::GetCurrent();
