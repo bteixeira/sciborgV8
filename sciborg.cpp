@@ -38,9 +38,13 @@ static void setHandler(const v8::FunctionCallbackInfo<v8::Value>& args) {
 	handlers[*ascii2] = charAddedHandler;
 }
 
+static void saveIt(const v8::FunctionCallbackInfo<v8::Value>& args) {
+	std::cout << "this should save the file...\n";
+}
+
 static std::map<int, std::string> signals;
 
-static void handleCA(GtkWidget *, gint /*wParam*/, SCNotification *notification, void *data) {
+static void handleSCISignal(GtkWidget *, gint /*wParam*/, SCNotification *notification, void *data) {
 	int code = notification->nmhdr.code;
 	std::string signal = signals[code];
     if (!signal.empty()) {
@@ -127,12 +131,16 @@ int main(int argc, char **argv) {
 
 	v8::Handle<v8::ObjectTemplate> sciObj = v8::ObjectTemplate::New();
 
-	global->Set(v8::String::New("log"), v8::FunctionTemplate::New(log));
 	global->Set(v8::String::New("SCI"), sciObj);
 	makeFunsAvailable(sciObj);
 	sciObj->Set(v8::String::New("on"), v8::FunctionTemplate::New(setHandler));
 
-	g_signal_connect(editor, SCINTILLA_NOTIFY, G_CALLBACK(handleCA), NULL);
+	v8::Handle<v8::ObjectTemplate> utilObj = v8::ObjectTemplate::New();
+	global->Set(v8::String::New("Util"), utilObj);
+	utilObj->Set(v8::String::New("save"), v8::FunctionTemplate::New(saveIt));
+	utilObj->Set(v8::String::New("log"), v8::FunctionTemplate::New(log));
+
+	g_signal_connect(editor, SCINTILLA_NOTIFY, G_CALLBACK(handleSCISignal), NULL);
 
 	context = v8::Context::New(isolate, NULL, global);
 	v8::Context::Scope context_scope(context);

@@ -4,6 +4,9 @@ SCI.on('charAdded', function(char) {
 	//SCI.setText('HACKED');
 	//SCI.setText(SCI.getText() + SCI.getText());
 	log(char);
+	if (char === 83) {
+		Util.save();
+	}
 });
 /**/
 /**/
