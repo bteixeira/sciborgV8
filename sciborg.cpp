@@ -90,35 +90,48 @@ int main(int argc, char **argv) {
 	gtk_init(&argc, &argv);
 	app = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	editor = scintilla_new();
+	gtk_widget_set_usize(editor, 500, 300);
 	sci = SCINTILLA(editor);
+	scintilla_set_id(sci, 0);
 
-    GtkWidget* layout = gtk_fixed_new();
+    GtkWidget* vbox = gtk_vbox_new(FALSE, 0);
 
-	gtk_container_add(GTK_CONTAINER(app), layout);
-	gtk_fixed_put(GTK_FIXED(layout), editor, 0, 20);
+	gtk_container_add(GTK_CONTAINER(app), vbox);
 
 	gtk_signal_connect(GTK_OBJECT(app), "delete_event", GTK_SIGNAL_FUNC(exit_app), 0);
-
-	scintilla_set_id(sci, 0);
-	gtk_widget_set_usize(editor, 500, 300);
 
 	/***************/
 	/* Try adding a new editor pane to the same window */
 
     GtkWidget *pane;
     pane = scintilla_new();
+    gtk_widget_set_usize(pane, 500, 20);
+
 	ScintillaObject *sci2 = SCINTILLA(pane);
-	gtk_fixed_put(GTK_FIXED(layout), pane, 0, 0);
 	scintilla_set_id(sci2, 1);
 
 	scintilla_send_message(sci2, SCI_SETWRAPMODE, 2, 0);
-
     scintilla_send_message(sci2, SCI_STYLECLEARALL, 0, 0);
-
     scintilla_send_message(sci2, SCI_STYLESETFONT, 0, (sptr_t) "monospace");
     scintilla_send_message(sci2, SCI_STYLESETSIZE, 0, 10);
 
-	gtk_widget_set_usize(pane, 500, 20);
+
+    GtkWidget *console;
+    console = scintilla_new();
+    gtk_widget_set_usize(console, 500, 60);
+
+	ScintillaObject *sci3 = SCINTILLA(console);
+	scintilla_set_id(sci3, 2);
+
+	scintilla_send_message(sci3, SCI_SETWRAPMODE, 2, 0);
+    scintilla_send_message(sci3, SCI_STYLECLEARALL, 0, 0);
+    scintilla_send_message(sci3, SCI_STYLESETFONT, 0, (sptr_t) "monospace");
+    scintilla_send_message(sci3, SCI_STYLESETSIZE, 0, 10);
+
+
+	gtk_box_pack_start(GTK_BOX(vbox), pane, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), editor, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), console, FALSE, FALSE, 0);
 
 	/***************/
 	/* Try reading a file */
