@@ -83,6 +83,12 @@ int main(int argc, char **argv) {
     /* TODO Take this out of here */
     signals[SCN_CHARADDED] = "charAdded";
     signals[SCN_KEY] = "key";
+    /* TODO add these:
+        (Keyboard commands)
+        (Key bindings)
+        SCEN_SETFOCUS
+        SCEN_KILLFOCUS
+    */
 
 	GtkWidget *app;
 	GtkWidget *editor;

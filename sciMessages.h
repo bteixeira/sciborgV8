@@ -60,16 +60,47 @@ static v8::Handle<v8::Value> SEND_SCI_SETKEYWORDS(const v8::Arguments& args) {
 /*
 
 SCI_SETREADONLY(bool readOnly)
-
-*/
-
-/*
+SCI_GETREADONLY
+SCI_FINDTEXT(int flags, Sci_TextToFind *ttf)
+SCI_SEARCHNEXT(int searchFlags, const char *text)
+SCI_GETTEXTLENGTH
+SCI_GETLENGTH
+SCI_GETLINECOUNT
+SCI_GETMODIFY
+SCI_SETVIEWWS(int wsMode)
+SCI_SETMARGINTYPEN(int margin, int iType)
+SCI_SETMARGINWIDTHN(int margin, int pixelWidth)
+SCI_SETMARGINMASKN(int margin, int mask)
+SCI_MARGINSETTEXT(int line, char *text)
+SCI_MARGINSETSTYLE(int line, int style)
+SCI_ANNOTATIONSETTEXT(int line, char *text)
+SCI_ANNOTATIONSETSTYLE(int line, int style)
+SCI_ANNOTATIONSETVISIBLE(int visible)
+SCI_SETFOCUS(bool focus)
+SCI_BRACEHIGHLIGHT(int pos1, int pos2)
+SCI_BRACEBADLIGHT(int pos1)
+SCI_BRACEHIGHLIGHTINDICATOR(bool useBraceHighlightIndicator, int indicatorNumber)
+SCI_BRACEBADLIGHTINDICATOR(bool useBraceBadLightIndicator, int indicatorNumber)
+SCI_BRACEMATCH(int position, int maxReStyle)
+SCI_SETINDENTATIONGUIDES(int indentView)
+SCI_MARKERDEFINE(int markerNumber, int markerSymbols)
+SCI_MARKERADD(int line, int markerNumber)
+SCI_MARKERDELETE(int line, int markerNumber)
+SCI_INDICSETSTYLE(int indicatorNumber, int indicatorStyle)
+SCI_INDICATORFILLRANGE(int position, int fillLength)
+SCI_INDICATORCLEARRANGE(int position, int clearLength)
+SCI_AUTOCSHOW(int lenEntered, const char *list)
+SCI_AUTOCCANCEL
+SCI_AUTOCCOMPLETE
+SCI_CALLTIPSHOW(int posStart, const char *definition)
+SCI_SETWRAPMODE(int wrapMode)
+SCI_SETWRAPVISUALFLAGS(int wrapVisualFlags)
+SCI_SETEDGEMODE(int mode)
+SCI_SETEDGECOLUMN(int column)
 
 SCI_SETCARETLINEVISIBLE(bool show)
 SCI_SETCARETLINEBACK(int colour)
 SCI_SETCARETLINEBACKALPHA(int alpha)
-
-SCI_SETCARETPERIOD(int milliseconds)
 SCI_SETCARETWIDTH(int pixels)
 
 */
@@ -100,15 +131,10 @@ static void makeFunsAvailable(v8::Handle<v8::ObjectTemplate> context) {
 	context->Set(v8::String::New("styleSetFore"), v8::FunctionTemplate::New(SEND_SCI_STYLESETFORE));
 	context->Set(v8::String::New("styleSetFont"), v8::FunctionTemplate::New(SEND_SCI_STYLESETFONT));
 
-//	context->Set(v8::String::New("SCI_SETCARETFORE"), v8::FunctionTemplate::New(SEND_SCI_SETCARETFORE));
 
 	context->Set(v8::String::New("setCaretFore"), v8::FunctionTemplate::New(SEND_SCI_SETCARETFORE));
-//	context->Set(v8::String::New("SCI_SETCARETFORE"), v8::FunctionTemplate::New(SEND_SCI_SETCARETFORE));
-//	context->Set(v8::String::New("SCI_SETCARETFORE"), v8::FunctionTemplate::New(SEND_SCI_SETCARETFORE));
-//	context->Set(v8::String::New("SCI_SETCARETFORE"), v8::FunctionTemplate::New(SEND_SCI_SETCARETFORE));
 	context->Set(v8::String::New("setCaretPeriod"), v8::FunctionTemplate::New(SEND_SCI_SETCARETPERIOD));
 	context->Set(v8::String::New("setCaretStyle"), v8::FunctionTemplate::New(SEND_SCI_SETCARETSTYLE));
-//	context->Set(v8::String::New("SCI_SETCARETFORE"), v8::FunctionTemplate::New(SEND_SCI_SETCARETFORE));
 
 	context->Set(v8::String::New("setLexer"), v8::FunctionTemplate::New(SEND_SCI_SETLEXER));
 	context->Set(v8::String::New("setKeywords"), v8::FunctionTemplate::New(SEND_SCI_SETKEYWORDS));
