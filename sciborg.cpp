@@ -45,11 +45,11 @@ static void saveIt(const v8::FunctionCallbackInfo<v8::Value>& args) {
     if (filename != NULL) {
         std::cout << "this should save the file to " << filename << " ...\n";
 
-        int n = scintilla_send_message(sci, SCI_GETLENGTH, 0, 0);
+        int n = scintilla_send_message(sciEditor, SCI_GETLENGTH, 0, 0);
         std::cout << "text length should be " << n << "\n";
 
         char* contents = (char*) malloc(n + 1);
-        scintilla_send_message(sci, SCI_GETTEXT, n + 1, (sptr_t) contents);
+        scintilla_send_message(sciEditor, SCI_GETTEXT, n + 1, (sptr_t) contents);
         std::cout << "text contents should be " << contents << "\n";
 
         std::ofstream myfile;
@@ -97,8 +97,8 @@ int main(int argc, char **argv) {
 	app = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	editor = scintilla_new();
 	gtk_widget_set_usize(editor, 500, 300);
-	sci = SCINTILLA(editor);
-	scintilla_set_id(sci, 0);
+	sciEditor = SCINTILLA(editor);
+	scintilla_set_id(sciEditor, 0);
 
     GtkWidget* vbox = gtk_vbox_new(FALSE, 0);
 
@@ -109,35 +109,33 @@ int main(int argc, char **argv) {
 	/***************/
 	/* Try adding a new editor pane to the same window */
 
-    GtkWidget *pane;
-    pane = scintilla_new();
-    gtk_widget_set_usize(pane, 500, 20);
+    GtkWidget *infoPane = scintilla_new();
+    gtk_widget_set_usize(infoPane, 500, 20);
 
-	ScintillaObject *sci2 = SCINTILLA(pane);
-	scintilla_set_id(sci2, 1);
+	ScintillaObject *sciInfo = SCINTILLA(infoPane);
+	scintilla_set_id(sciInfo, 1);
 
-	scintilla_send_message(sci2, SCI_SETWRAPMODE, 2, 0);
-    scintilla_send_message(sci2, SCI_STYLECLEARALL, 0, 0);
-    scintilla_send_message(sci2, SCI_STYLESETFONT, 0, (sptr_t) "monospace");
-    scintilla_send_message(sci2, SCI_STYLESETSIZE, 0, 10);
-
-
-    GtkWidget *console;
-    console = scintilla_new();
-    gtk_widget_set_usize(console, 500, 60);
-
-	ScintillaObject *sci3 = SCINTILLA(console);
-	scintilla_set_id(sci3, 2);
-
-	scintilla_send_message(sci3, SCI_SETWRAPMODE, 2, 0);
-    scintilla_send_message(sci3, SCI_STYLECLEARALL, 0, 0);
-    scintilla_send_message(sci3, SCI_STYLESETFONT, 0, (sptr_t) "monospace");
-    scintilla_send_message(sci3, SCI_STYLESETSIZE, 0, 10);
+	scintilla_send_message(sciInfo, SCI_SETWRAPMODE, 2, 0);
+    scintilla_send_message(sciInfo, SCI_STYLECLEARALL, 0, 0);
+    scintilla_send_message(sciInfo, SCI_STYLESETFONT, 0, (sptr_t) "monospace");
+    scintilla_send_message(sciInfo, SCI_STYLESETSIZE, 0, 10);
 
 
-	gtk_box_pack_start(GTK_BOX(vbox), pane, FALSE, FALSE, 0);
+    GtkWidget *consolePane = scintilla_new();
+    gtk_widget_set_usize(consolePane, 500, 60);
+
+	ScintillaObject *sciConsole = SCINTILLA(consolePane);
+	scintilla_set_id(sciConsole, 2);
+
+	scintilla_send_message(sciConsole, SCI_SETWRAPMODE, 2, 0);
+    scintilla_send_message(sciConsole, SCI_STYLECLEARALL, 0, 0);
+    scintilla_send_message(sciConsole, SCI_STYLESETFONT, 0, (sptr_t) "monospace");
+    scintilla_send_message(sciConsole, SCI_STYLESETSIZE, 0, 10);
+
+
+	gtk_box_pack_start(GTK_BOX(vbox), infoPane, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), editor, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), console, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), consolePane, FALSE, FALSE, 0);
 
 	/***************/
 	/* Try reading a file */
@@ -156,14 +154,14 @@ int main(int argc, char **argv) {
         fclose(f);
 
         string[fsize] = 0;
-        scintilla_send_message(sci, SCI_INSERTTEXT, 0, (sptr_t) string);
-        scintilla_send_message(sci2, SCI_INSERTTEXT, 0, (sptr_t) filename);
+        scintilla_send_message(sciEditor, SCI_INSERTTEXT, 0, (sptr_t) string);
+        scintilla_send_message(sciInfo, SCI_INSERTTEXT, 0, (sptr_t) filename);
 	} else {
 	    std::cout << "No filename passed\n";
-	    scintilla_send_message(sci2, SCI_INSERTTEXT, 0, (sptr_t) "[new file]");
+	    scintilla_send_message(sciInfo, SCI_INSERTTEXT, 0, (sptr_t) "[new file]");
 	}
 
-	scintilla_send_message(sci2, SCI_SETREADONLY, 1, 0);
+	scintilla_send_message(sciInfo, SCI_SETREADONLY, 1, 0);
 	/***************/
 
 	isolate = v8::Isolate::GetCurrent();

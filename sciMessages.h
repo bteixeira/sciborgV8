@@ -1,5 +1,5 @@
 
-ScintillaObject *sci;
+ScintillaObject *sciEditor;
 
 /******************************************************************************/
 
@@ -13,31 +13,31 @@ static v8::Handle<v8::Value> SEND_SCI_GETTEXT(const v8::Arguments& args) {
 void SEND_SCI_SETTEXT(const v8::FunctionCallbackInfo<v8::Value>& args) {
 	v8::String::AsciiValue text(args[0]);
 	//printf("setting text to %s\n", *text);
-	scintilla_send_message(sci, SCI_SETTEXT, 0, (long int) *text);
+	scintilla_send_message(sciEditor, SCI_SETTEXT, 0, (long int) *text);
 }
 
 /******************************************************************************/
 
 static void SEND_SCI_STYLECLEARALL(const v8::FunctionCallbackInfo<v8::Value>& args) {
-	scintilla_send_message(sci, SCI_STYLECLEARALL, 0, 0);
+	scintilla_send_message(sciEditor, SCI_STYLECLEARALL, 0, 0);
 }
 
 static void SEND_SCI_STYLESETBACK(const v8::FunctionCallbackInfo<v8::Value>& args) {
 	v8::Handle<v8::Value> style = args[0];
 	v8::Handle<v8::Value> color = args[1];
-	scintilla_send_message(sci, SCI_STYLESETBACK, style->Int32Value(), color->Int32Value());
+	scintilla_send_message(sciEditor, SCI_STYLESETBACK, style->Int32Value(), color->Int32Value());
 }
 
 static void SEND_SCI_STYLESETFORE(const v8::FunctionCallbackInfo<v8::Value>& args) {
     v8::Handle<v8::Value> style = args[0];
 	v8::Handle<v8::Value> color = args[1];
-	scintilla_send_message(sci, SCI_STYLESETFORE, style->Int32Value(), color->Int32Value());
+	scintilla_send_message(sciEditor, SCI_STYLESETFORE, style->Int32Value(), color->Int32Value());
 }
 
 static void SEND_SCI_STYLESETFONT(const v8::FunctionCallbackInfo<v8::Value>& args) {
     v8::Handle<v8::Value> style = args[0];
 	v8::String::AsciiValue font(args[1]);
-	scintilla_send_message(sci, SCI_STYLESETFONT, style->Int32Value(), (sptr_t) *font);
+	scintilla_send_message(sciEditor, SCI_STYLESETFONT, style->Int32Value(), (sptr_t) *font);
 }
 
 /******************************************************************************/
@@ -45,14 +45,14 @@ static void SEND_SCI_STYLESETFONT(const v8::FunctionCallbackInfo<v8::Value>& arg
 static v8::Handle<v8::Value> SEND_SCI_SETLEXER(const v8::Arguments& args) {
     int lexer = args[0]->Int32Value();
     printf("setting lexer %d\n", lexer);
-	scintilla_send_message(sci, SCI_SETLEXER, lexer, 0);
+	scintilla_send_message(sciEditor, SCI_SETLEXER, lexer, 0);
 }
 
 /* TODO DOES NOT SEEM TO WORK IF THE TEXT IS EMPTY */
 static v8::Handle<v8::Value> SEND_SCI_SETKEYWORDS(const v8::Arguments& args) {
     v8::String::AsciiValue keywords(args[0]);
     printf("setting keywords [%s]\n", *keywords);
-	scintilla_send_message(sci, SCI_SETKEYWORDS, 0, (long int) *keywords);
+	scintilla_send_message(sciEditor, SCI_SETKEYWORDS, 0, (long int) *keywords);
 }
 
 /******************************************************************************/
@@ -107,17 +107,17 @@ SCI_SETCARETWIDTH(int pixels)
 
 static v8::Handle<v8::Value> SEND_SCI_SETCARETFORE(const v8::Arguments& args) {
     int color = args[0]->Int32Value();
-	scintilla_send_message(sci, SCI_SETCARETFORE, color, 0);
+	scintilla_send_message(sciEditor, SCI_SETCARETFORE, color, 0);
 }
 
 static v8::Handle<v8::Value> SEND_SCI_SETCARETSTYLE(const v8::Arguments& args) {
     int style = args[0]->Int32Value();
-	scintilla_send_message(sci, SCI_SETCARETSTYLE, style, 0);
+	scintilla_send_message(sciEditor, SCI_SETCARETSTYLE, style, 0);
 }
 
 static v8::Handle<v8::Value> SEND_SCI_SETCARETPERIOD(const v8::Arguments& args) {
     int millis = args[0]->Int32Value();
-	scintilla_send_message(sci, SCI_SETCARETPERIOD, millis, 0);
+	scintilla_send_message(sciEditor, SCI_SETCARETPERIOD, millis, 0);
 }
 
 /******************************************************************************/
