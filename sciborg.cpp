@@ -18,6 +18,7 @@
 char* filename;
 
 v8::Handle<v8::Script> readFromFile(char* filename);
+ScintillaObject *sciEditor;
 
 v8::Isolate* isolate;
 v8::Handle<v8::Context> context;
@@ -90,6 +91,7 @@ int main(int argc, char **argv) {
         SCEN_KILLFOCUS
     */
 
+
 	GtkWidget *app;
 	GtkWidget *editor;
 
@@ -97,7 +99,7 @@ int main(int argc, char **argv) {
 	app = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	editor = scintilla_new();
 	gtk_widget_set_usize(editor, 500, 300);
-	sciEditor = SCINTILLA(editor);
+    sciEditor = SCINTILLA(editor);
 	scintilla_set_id(sciEditor, 0);
 
     GtkWidget* vbox = gtk_vbox_new(FALSE, 0);
@@ -182,8 +184,6 @@ int main(int argc, char **argv) {
 
 	borgEditor->Set(v8::String::New("on"), v8::FunctionTemplate::New(setHandler));
 
-	//v8::Handle<v8::ObjectTemplate> utilObj = v8::ObjectTemplate::New();
-	//global->Set(v8::String::New("Util"), utilObj);
 	borg->Set(v8::String::New("save"), v8::FunctionTemplate::New(saveIt));
 	borg->Set(v8::String::New("log"), v8::FunctionTemplate::New(log));
 
