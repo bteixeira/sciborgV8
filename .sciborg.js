@@ -17,10 +17,11 @@ SCI.on('key', function(key, mod) {
 });
 /**/
 /**/
+SCI.styleSetFont(32, 'monospace');
 SCI.setLexer(3);
 //SCI.setText('a');
 
-SCI.styleSetFont(32, 'monospace');
+
 SCI.styleSetFore(32, 0xFFFFFF);
 SCI.styleSetBack(32, 0x444444);
 SCI.styleClearAll();

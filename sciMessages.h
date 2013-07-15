@@ -25,7 +25,11 @@ static void SEND_SCI_STYLECLEARALL(const v8::FunctionCallbackInfo<v8::Value>& ar
 static void SEND_SCI_STYLESETBACK(const v8::FunctionCallbackInfo<v8::Value>& args) {
 	v8::Handle<v8::Value> style = args[0];
 	v8::Handle<v8::Value> color = args[1];
-	scintilla_send_message(sciEditor, SCI_STYLESETBACK, style->Int32Value(), color->Int32Value());
+
+	v8::Local<v8::External> ext = v8::Local<v8::External>::Cast(args.Data());
+	ScintillaObject* sci = (ScintillaObject*) (ext->Value());
+
+	scintilla_send_message(sci, SCI_STYLESETBACK, style->Int32Value(), color->Int32Value());
 }
 
 static void SEND_SCI_STYLESETFORE(const v8::FunctionCallbackInfo<v8::Value>& args) {
@@ -37,16 +41,13 @@ static void SEND_SCI_STYLESETFORE(const v8::FunctionCallbackInfo<v8::Value>& arg
 static void SEND_SCI_STYLESETFONT(const v8::FunctionCallbackInfo<v8::Value>& args) {
     v8::Handle<v8::Value> style = args[0];
 	v8::String::AsciiValue font(args[1]);
+	//printf("setting font for editor %p\n", sciEditor);
 	scintilla_send_message(sciEditor, SCI_STYLESETFONT, style->Int32Value(), (sptr_t) *font);
 }
 
 /******************************************************************************/
 
-static v8::Handle<v8::Value> SEND_SCI_SETLEXER(const v8::Arguments& args) {
-    int lexer = args[0]->Int32Value();
-    printf("setting lexer %d\n", lexer);
-	scintilla_send_message(sciEditor, SCI_SETLEXER, lexer, 0);
-}
+
 
 /* TODO DOES NOT SEEM TO WORK IF THE TEXT IS EMPTY */
 static v8::Handle<v8::Value> SEND_SCI_SETKEYWORDS(const v8::Arguments& args) {
@@ -120,15 +121,70 @@ static v8::Handle<v8::Value> SEND_SCI_SETCARETPERIOD(const v8::Arguments& args) 
 	scintilla_send_message(sciEditor, SCI_SETCARETPERIOD, millis, 0);
 }
 
+
+
+
+
+
+
+static v8::Handle<v8::Value> SEND_SCI_SETLEXER(const v8::Arguments& args) {
+    int lexer = args[0]->Int32Value();
+    //printf("setting lexer %d\n", lexer);
+    /*
+    v8::Local<v8::External> ext = v8::External::Cast(*(args.Data()));
+    printf(" data is %p\n",  (args.Data()));
+    printf("*data is %p\n", *(args.Data()));
+    printf("**data is %p\n", **(args.Data()));
+    printf(" ext is %p\n",  ext);
+    printf("*ext is %p\n", *ext);
+    printf("**ext is %p\n", **ext);
+    printf("&ext is %p\n", &ext);
+    printf("-- is %p\n", (void*)(ext->Value()));
+    //printf("&data is %p\n", &(args.Data()));
+    ScintillaObject *sci = (ScintillaObject*) *(args.Data());
+    //printf("setting lexer for editor %p\n", sci);
+	scintilla_send_message(sci, SCI_SETLEXER, lexer, 0);
+	*/
+	//v8::Local<v8::External> ext = v8::External::Cast(*(args.Data()));
+	//v8::Persistent<v8::External> ext = v8::Persistent<v8::External>::Cast(args.Data());
+	//printf(" ext is %p\n",  ext);
+	//ScintillaObject *sci = (ScintillaObject*) ext->Value();
+	//printf("setting lexer for editor %p\n", sci);
+	std::cout << "data is external? " << args.Data()->IsExternal() << "\n";
+	std::cout << "data is empty? " << args.Data().IsEmpty() << "\n";
+	v8::Local<v8::External> ext = v8::Local<v8::External>::Cast(args.Data());
+	std::cout << ext->Value() << "\n";
+
+	ScintillaObject* sci = (ScintillaObject*) (ext->Value());
+	std::cout << sci << "\n";
+	//printf("setting lexer for editor %p\n", sci);
+	scintilla_send_message(sci, SCI_SETLEXER, lexer, 0);
+}
+
 /******************************************************************************/
 
-static void makeFunsAvailable(v8::Handle<v8::ObjectTemplate> context) {
+static void makeFunsAvailable(v8::Handle<v8::ObjectTemplate> context, ScintillaObject* sci) {
+    v8::Persistent<v8::External> ext = v8::Persistent<v8::External>::New(v8::External::New(sci));
+
+	printf(" sci is %p\n",  sci);
+	printf(" sci should be %p\n",  ext->Value());
+	printf(" ext is %p\n",  ext);
+	printf("*ext is %p\n", *ext);
+	printf("&ext is %p\n", &ext);
+
 	context->Set(v8::String::New("setText"), v8::FunctionTemplate::New(SEND_SCI_SETTEXT));
 	context->Set(v8::String::New("getText"), v8::FunctionTemplate::New(SEND_SCI_GETTEXT));
 
 	context->Set(v8::String::New("styleClearAll"), v8::FunctionTemplate::New(SEND_SCI_STYLECLEARALL));
-	context->Set(v8::String::New("styleSetBack"), v8::FunctionTemplate::New(SEND_SCI_STYLESETBACK));
+	context->Set(v8::String::New("styleSetBack"), v8::FunctionTemplate::New(SEND_SCI_STYLESETBACK, ext));
 	context->Set(v8::String::New("styleSetFore"), v8::FunctionTemplate::New(SEND_SCI_STYLESETFORE));
+
+
+
+
+	//context->SetInternalFieldCount(1);
+	//context->SetInternalField(0, External::New(sci));
+
 	context->Set(v8::String::New("styleSetFont"), v8::FunctionTemplate::New(SEND_SCI_STYLESETFONT));
 
 
@@ -136,6 +192,6 @@ static void makeFunsAvailable(v8::Handle<v8::ObjectTemplate> context) {
 	context->Set(v8::String::New("setCaretPeriod"), v8::FunctionTemplate::New(SEND_SCI_SETCARETPERIOD));
 	context->Set(v8::String::New("setCaretStyle"), v8::FunctionTemplate::New(SEND_SCI_SETCARETSTYLE));
 
-	context->Set(v8::String::New("setLexer"), v8::FunctionTemplate::New(SEND_SCI_SETLEXER));
+	context->Set(v8::String::New("setLexer"), v8::FunctionTemplate::New(SEND_SCI_SETLEXER, ext));
 	context->Set(v8::String::New("setKeywords"), v8::FunctionTemplate::New(SEND_SCI_SETKEYWORDS));
 }
