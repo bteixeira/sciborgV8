@@ -1,38 +1,38 @@
 
 /**/
-SCI.on('charAdded', function(char) {
-	//SCI.setText('HACKED');
-	//SCI.setText(SCI.getText() + SCI.getText());
-	Util.log(char);
+BORG.editor.on('charAdded', function(char) {
+	//BORG.editor.setText('HACKED');
+	//BORG.editor.setText(BORG.editor.getText() + BORG.editor.getText());
+	BORG.log(char);
 });
 
-SCI.on('key', function(key, mod) {
-	//SCI.setText('HACKED');
-	//SCI.setText(SCI.getText() + SCI.getText());
-	Util.log("key: " + key);
-	Util.log("mod: " + mod);
+BORG.editor.on('key', function(key, mod) {
+	//BORG.editor.setText('HACKED');
+	//BORG.editor.setText(BORG.editor.getText() + BORG.editor.getText());
+	BORG.log("key: " + key);
+	BORG.log("mod: " + mod);
 	if (key === 83 && mod === 2) {
-		Util.save();
+		BORG.save();
 	}
 });
 /**/
 /**/
-SCI.styleSetFont(32, 'monospace');
-SCI.setLexer(3);
-//SCI.setText('a');
+BORG.editor.styleSetFont(32, 'monospace');
+BORG.editor.setLexer(3);
+//BORG.editor.setText('a');
 
 
-SCI.styleSetFore(32, 0xFFFFFF);
-SCI.styleSetBack(32, 0x444444);
-SCI.styleClearAll();
-//SCI.setKeywords('var function if while do throw for');
-SCI.styleSetFore(5, 0xFF66FF);
-SCI.styleSetFont(0, 'monospace');
-SCI.styleSetFont(5, 'monospace');
-SCI.styleSetFont(11, 'monospace');
-//SCI.setText('function() {\n\tvar x;\n\treturn 0;\n}\n');
+BORG.editor.styleSetFore(32, 0xFFFFFF);
+BORG.editor.styleSetBack(32, 0x444444);
+BORG.editor.styleClearAll();
+//BORG.editor.setKeywords('var function if while do throw for');
+BORG.editor.styleSetFore(5, 0xFF66FF);
+BORG.editor.styleSetFont(0, 'monospace');
+BORG.editor.styleSetFont(5, 'monospace');
+BORG.editor.styleSetFont(11, 'monospace');
+//BORG.editor.setText('function() {\n\tvar x;\n\treturn 0;\n}\n');
 
-SCI.setCaretFore(0x00FF00);
-SCI.setCaretStyle(2);
-SCI.setCaretPeriod(0);
+BORG.editor.setCaretFore(0x00FF00);
+BORG.editor.setCaretStyle(2);
+BORG.editor.setCaretPeriod(0);
 /**/

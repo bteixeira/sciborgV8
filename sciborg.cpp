@@ -169,16 +169,23 @@ int main(int argc, char **argv) {
 
 	v8::Handle<v8::ObjectTemplate> global = v8::ObjectTemplate::New();
 
-	v8::Handle<v8::ObjectTemplate> sciObj = v8::ObjectTemplate::New();
+	v8::Handle<v8::ObjectTemplate> borg = v8::ObjectTemplate::New();
+	v8::Handle<v8::ObjectTemplate> borgEditor = v8::ObjectTemplate::New();
+	v8::Handle<v8::ObjectTemplate> borgInfo = v8::ObjectTemplate::New();
+	v8::Handle<v8::ObjectTemplate> borgConsole = v8::ObjectTemplate::New();
 
-	global->Set(v8::String::New("SCI"), sciObj);
-	makeFunsAvailable(sciObj, sciEditor);
-	sciObj->Set(v8::String::New("on"), v8::FunctionTemplate::New(setHandler));
+	borg->Set(v8::String::New("editor"), borgEditor);
+	borg->Set(v8::String::New("infoPane"), borgInfo);
+	borg->Set(v8::String::New("consolePane"), borgConsole);
+	global->Set(v8::String::New("BORG"), borg);
+	makeFunsAvailable(borgEditor, sciEditor);
 
-	v8::Handle<v8::ObjectTemplate> utilObj = v8::ObjectTemplate::New();
-	global->Set(v8::String::New("Util"), utilObj);
-	utilObj->Set(v8::String::New("save"), v8::FunctionTemplate::New(saveIt));
-	utilObj->Set(v8::String::New("log"), v8::FunctionTemplate::New(log));
+	borgEditor->Set(v8::String::New("on"), v8::FunctionTemplate::New(setHandler));
+
+	//v8::Handle<v8::ObjectTemplate> utilObj = v8::ObjectTemplate::New();
+	//global->Set(v8::String::New("Util"), utilObj);
+	borg->Set(v8::String::New("save"), v8::FunctionTemplate::New(saveIt));
+	borg->Set(v8::String::New("log"), v8::FunctionTemplate::New(log));
 
 	g_signal_connect(editor, SCINTILLA_NOTIFY, G_CALLBACK(handleSCISignal), NULL);
 
