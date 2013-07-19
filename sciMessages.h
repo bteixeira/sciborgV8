@@ -66,9 +66,17 @@ static v8::Handle<v8::Value> SEND_SCI_SETKEYWORDS(const v8::Arguments& args) {
 
 /******************************************************************************/
 
+static v8::Handle<v8::Value> SEND_SCI_SETREADONLY(const v8::Arguments& args) {
+    bool readOnly = args[0]->BooleanValue();
+    //std::cout << "setting RO " << readOnly << "\n";
+    ScintillaObject* sci = getSciFromArgs(args);
+    //std::cout << "got sci " << sci << "\n";
+	scintilla_send_message(sci, SCI_SETREADONLY, readOnly, 0);
+	std::cout << "sent message" << "\n";
+}
+
 /*
 
-SCI_SETREADONLY(bool readOnly)
 SCI_GETREADONLY
 SCI_FINDTEXT(int flags, Sci_TextToFind *ttf)
 SCI_SEARCHNEXT(int searchFlags, const char *text)
@@ -98,7 +106,7 @@ SCI_MARKERDELETE(int line, int markerNumber)
 SCI_INDICSETSTYLE(int indicatorNumber, int indicatorStyle)
 SCI_INDICATORFILLRANGE(int position, int fillLength)
 SCI_INDICATORCLEARRANGE(int position, int clearLength)
-SCI_AUTOCSHOW(int lenEntered, const char *list)
+
 SCI_AUTOCCANCEL
 SCI_AUTOCCOMPLETE
 SCI_CALLTIPSHOW(int posStart, const char *definition)
@@ -113,6 +121,13 @@ SCI_SETCARETLINEBACKALPHA(int alpha)
 SCI_SETCARETWIDTH(int pixels)
 
 */
+
+static v8::Handle<v8::Value> SEND_SCI_AUTOCSHOW(const v8::Arguments& args) {
+    int len = args[0]->Int32Value();
+    v8::String::AsciiValue list(args[1]);
+    ScintillaObject* sci = getSciFromArgs(args);
+    scintilla_send_message(sci, SCI_AUTOCSHOW, len, (sptr_t) *list);
+}
 
 static v8::Handle<v8::Value> SEND_SCI_SETCARETFORE(const v8::Arguments& args) {
     int color = args[0]->Int32Value();
@@ -132,43 +147,10 @@ static v8::Handle<v8::Value> SEND_SCI_SETCARETPERIOD(const v8::Arguments& args) 
 	scintilla_send_message(sci, SCI_SETCARETPERIOD, millis, 0);
 }
 
-
-
-
-
-
-
 static v8::Handle<v8::Value> SEND_SCI_SETLEXER(const v8::Arguments& args) {
     int lexer = args[0]->Int32Value();
-    //printf("setting lexer %d\n", lexer);
-    /*
-    v8::Local<v8::External> ext = v8::External::Cast(*(args.Data()));
-    printf(" data is %p\n",  (args.Data()));
-    printf("*data is %p\n", *(args.Data()));
-    printf("**data is %p\n", **(args.Data()));
-    printf(" ext is %p\n",  ext);
-    printf("*ext is %p\n", *ext);
-    printf("**ext is %p\n", **ext);
-    printf("&ext is %p\n", &ext);
-    printf("-- is %p\n", (void*)(ext->Value()));
-    //printf("&data is %p\n", &(args.Data()));
-    ScintillaObject *sci = (ScintillaObject*) *(args.Data());
-    //printf("setting lexer for editor %p\n", sci);
-	scintilla_send_message(sci, SCI_SETLEXER, lexer, 0);
-	*/
-	//v8::Local<v8::External> ext = v8::External::Cast(*(args.Data()));
-	//v8::Persistent<v8::External> ext = v8::Persistent<v8::External>::Cast(args.Data());
-	//printf(" ext is %p\n",  ext);
-	//ScintillaObject *sci = (ScintillaObject*) ext->Value();
-	//printf("setting lexer for editor %p\n", sci);
-	std::cout << "data is external? " << args.Data()->IsExternal() << "\n";
-	std::cout << "data is empty? " << args.Data().IsEmpty() << "\n";
 	v8::Local<v8::External> ext = v8::Local<v8::External>::Cast(args.Data());
-	std::cout << ext->Value() << "\n";
-
 	ScintillaObject* sci = (ScintillaObject*) (ext->Value());
-	std::cout << sci << "\n";
-	//printf("setting lexer for editor %p\n", sci);
 	scintilla_send_message(sci, SCI_SETLEXER, lexer, 0);
 }
 
@@ -177,27 +159,16 @@ static v8::Handle<v8::Value> SEND_SCI_SETLEXER(const v8::Arguments& args) {
 static void makeFunsAvailable(v8::Handle<v8::ObjectTemplate> context, ScintillaObject* sci) {
     v8::Handle<v8::External> ext = v8::External::New(sci);
 
-	printf(" sci is %p\n",  sci);
-	printf(" sci should be %p\n",  ext->Value());
-	printf(" ext is %p\n",  ext);
-	printf("*ext is %p\n", *ext);
-	printf("&ext is %p\n", &ext);
+    std::cout << sci << "\n";
 
 	context->Set(v8::String::New("setText"), v8::FunctionTemplate::New(SEND_SCI_SETTEXT, ext));
-	context->Set(v8::String::New("getText"), v8::FunctionTemplate::New(SEND_SCI_GETTEXT, ext));
+	//context->Set(v8::String::New("getText"), v8::FunctionTemplate::New(SEND_SCI_GETTEXT, ext));
 
 	context->Set(v8::String::New("styleClearAll"), v8::FunctionTemplate::New(SEND_SCI_STYLECLEARALL, ext));
 	context->Set(v8::String::New("styleSetBack"), v8::FunctionTemplate::New(SEND_SCI_STYLESETBACK, ext));
 	context->Set(v8::String::New("styleSetFore"), v8::FunctionTemplate::New(SEND_SCI_STYLESETFORE, ext));
 
-
-
-
-	//context->SetInternalFieldCount(1);
-	//context->SetInternalField(0, External::New(sci));
-
 	context->Set(v8::String::New("styleSetFont"), v8::FunctionTemplate::New(SEND_SCI_STYLESETFONT, ext));
-
 
 	context->Set(v8::String::New("setCaretFore"), v8::FunctionTemplate::New(SEND_SCI_SETCARETFORE, ext));
 	context->Set(v8::String::New("setCaretPeriod"), v8::FunctionTemplate::New(SEND_SCI_SETCARETPERIOD, ext));
@@ -205,4 +176,9 @@ static void makeFunsAvailable(v8::Handle<v8::ObjectTemplate> context, ScintillaO
 
 	context->Set(v8::String::New("setLexer"), v8::FunctionTemplate::New(SEND_SCI_SETLEXER, ext));
 	context->Set(v8::String::New("setKeywords"), v8::FunctionTemplate::New(SEND_SCI_SETKEYWORDS, ext));
+
+	context->Set(v8::String::New("setReadOnly"), v8::FunctionTemplate::New(SEND_SCI_SETREADONLY, ext));
+
+	context->Set(v8::String::New("autoCShow"), v8::FunctionTemplate::New(SEND_SCI_AUTOCSHOW, ext));
+
 }

@@ -4,6 +4,10 @@ BORG.editor.on('charAdded', function(char) {
 	//BORG.editor.setText('HACKED');
 	//BORG.editor.setText(BORG.editor.getText() + BORG.editor.getText());
 	BORG.log(char);
+	if (char == 113) {
+		BORG.log('calling auto complete');
+		BORG.editor.autoCShow(1, 'aaa aab aac');
+	}
 });
 
 BORG.editor.on('key', function(key, mod) {
@@ -36,3 +40,11 @@ BORG.editor.setCaretFore(0x00FF00);
 BORG.editor.setCaretStyle(2);
 BORG.editor.setCaretPeriod(0);
 /**/
+
+BORG.infoPane.styleSetBack(32, 0xDDDDDD);
+BORG.consolePane.styleSetBack(32, 0x333333);
+
+BORG.consolePane.setReadOnly(true);
+
+//BORG.editor.autoCShow(1, 'aaa aab aac');
+

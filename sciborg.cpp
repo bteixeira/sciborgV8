@@ -134,7 +134,6 @@ int main(int argc, char **argv) {
     scintilla_send_message(sciConsole, SCI_STYLESETFONT, 0, (sptr_t) "monospace");
     scintilla_send_message(sciConsole, SCI_STYLESETSIZE, 0, 10);
 
-
 	gtk_box_pack_start(GTK_BOX(vbox), infoPane, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), editor, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), consolePane, FALSE, FALSE, 0);
@@ -163,7 +162,10 @@ int main(int argc, char **argv) {
 	    scintilla_send_message(sciInfo, SCI_INSERTTEXT, 0, (sptr_t) "[new file]");
 	}
 
+	scintilla_send_message(sciConsole, SCI_INSERTTEXT, 0, (sptr_t) ">>> ");
+
 	scintilla_send_message(sciInfo, SCI_SETREADONLY, 1, 0);
+
 	/***************/
 
 	isolate = v8::Isolate::GetCurrent();
@@ -181,6 +183,9 @@ int main(int argc, char **argv) {
 	borg->Set(v8::String::New("consolePane"), borgConsole);
 	global->Set(v8::String::New("BORG"), borg);
 	makeFunsAvailable(borgEditor, sciEditor);
+	makeFunsAvailable(borgInfo, sciInfo);
+	makeFunsAvailable(borgConsole, sciConsole);
+
 
 	borgEditor->Set(v8::String::New("on"), v8::FunctionTemplate::New(setHandler));
 
@@ -194,10 +199,13 @@ int main(int argc, char **argv) {
 
 	v8::Handle<v8::Script> script = readFromFile("./.sciborg.js");
 	v8::Handle<v8::Value> result = script->Run();
+	//scintilla_send_message(sciConsole, SCI_SETREADONLY, 1, 0);
 
 	gtk_widget_show_all(app);
 	gtk_widget_grab_focus(GTK_WIDGET(editor));
 	gtk_main();
+
+	std::cout << sciConsole << "\n";
 
 	return 0;
 }
