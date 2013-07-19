@@ -38,8 +38,8 @@ std::map<std::string, v8::Persistent<v8::Function> > handlers;
 static void setHandler(const v8::FunctionCallbackInfo<v8::Value>& args) {
 	v8::String::AsciiValue ascii2(args[0]);
 	//printf("setting handler for: %s\n", *ascii2);
-	v8::Persistent<v8::Function> charAddedHandler = v8::Persistent<v8::Function>::New(v8::Handle<v8::Function>::Cast(args[1]));
-	handlers[*ascii2] = charAddedHandler;
+	v8::Persistent<v8::Function> handler = v8::Persistent<v8::Function>::New(v8::Handle<v8::Function>::Cast(args[1]));
+	handlers[*ascii2] = handler;
 }
 
 static void saveIt(const v8::FunctionCallbackInfo<v8::Value>& args) {
