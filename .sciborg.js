@@ -1,13 +1,41 @@
 
 /**/
-BORG.editor.on('charAdded', function(char) {
+
+var dictionary = 'Amanda asymptotic babe beautiful butter butterfly';
+
+function isLetter(char) {
+	return (char >= 'A' && char <= 'Z') || (char >= 'a' && char <= 'z');
+}
+
+var soFar = '';
+BORG.editor.on('charAdded', function(code) {
 	//BORG.editor.setText('HACKED');
 	//BORG.editor.setText(BORG.editor.getText() + BORG.editor.getText());
+	char = String.fromCharCode(code);
 	BORG.log(char);
-	if (char == 113) {
+	/*if (char === 'q') {
+		isQ = true;
 		BORG.log('calling auto complete');
-		BORG.editor.autoCShow(1, 'aaa aab aac');
+		//BORG.editor.autoCShow(1, 'aaa aab aac qaeque que');
+		BORG.editor.autoCShow(1, dictionary);
+	} else {
+		if (char === 'u' && isQ) {
+			BORG.log('REACHED NEXT STEP');
+			//BORG.editor.autoCShow(2, 'aaa aab aac qaeque que');
+			BORG.editor.autoCShow(2, dictionary);
+		}
+		isQ = false;
+	}*/
+	
+	if (isLetter(char)) {
+		soFar += char;
+		BORG.log('calling autoc with ' + soFar.length + ',"' + dictionary + '"');
+		BORG.editor.autoCShow(soFar.length, dictionary);
+	} else {
+		soFar = '';
+		BORG.log('so far reset');
 	}
+	
 });
 
 BORG.editor.on('key', function(key, mod) {
@@ -47,4 +75,5 @@ BORG.consolePane.styleSetBack(32, 0x333333);
 BORG.consolePane.setReadOnly(true);
 
 //BORG.editor.autoCShow(1, 'aaa aab aac');
+
 

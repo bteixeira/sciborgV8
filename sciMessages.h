@@ -126,7 +126,12 @@ static v8::Handle<v8::Value> SEND_SCI_AUTOCSHOW(const v8::Arguments& args) {
     int len = args[0]->Int32Value();
     v8::String::AsciiValue list(args[1]);
     ScintillaObject* sci = getSciFromArgs(args);
+
+    int active = scintilla_send_message(sci, SCI_AUTOCACTIVE, 0, 0);
+    std::cout << "is autoc active? " << active << "\n";
+
     scintilla_send_message(sci, SCI_AUTOCSHOW, len, (sptr_t) *list);
+    //scintilla_send_message(sci, SCI_AUTOCSHOW, 1, (sptr_t) "alfa omega quebec");
 }
 
 static v8::Handle<v8::Value> SEND_SCI_SETCARETFORE(const v8::Arguments& args) {
