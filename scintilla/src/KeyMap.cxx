@@ -6,6 +6,7 @@
 // The License.txt file describes the conditions under which this software may be distributed.
 
 #include <stdlib.h>
+#include <stdio.h>
 
 #include <vector>
 
@@ -47,6 +48,15 @@ void KeyMap::AssignCmdKey(int key, int modifiers, unsigned int msg) {
 	ktc.modifiers = modifiers;
 	ktc.msg = msg;
 	kmap.push_back(ktc);
+}
+
+void KeyMap::dump() {
+    printf("ASSIGNMENTS:\n");
+    for (std::vector<KeyToCommand>::const_iterator i = kmap.begin() ; i != kmap.end() ; ++i) {
+        //std::cout << i->key << ' ';
+        printf("\t%d\t%d\t%d\n", i->key, i->modifiers, i->msg);
+    }
+    printf("\n");
 }
 
 unsigned int KeyMap::Find(int key, int modifiers) const {

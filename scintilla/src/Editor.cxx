@@ -8791,8 +8791,14 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		break;
 
 	case SCI_CLEARCMDKEY:
+        //std::cout << "LOW: " << Platform::LowShortFromLong(wParam) << "\n";
+
+        //printf("DUMPING: ");
+        kmap.dump();
+        printf("LOW:  %d | HI:  %d\n", Platform::LowShortFromLong(wParam), Platform::HighShortFromLong(wParam));
 		kmap.AssignCmdKey(Platform::LowShortFromLong(wParam),
 		        Platform::HighShortFromLong(wParam), SCI_NULL);
+        kmap.dump();
 		break;
 
 	case SCI_CLEARALLCMDKEYS:

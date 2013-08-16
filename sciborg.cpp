@@ -69,7 +69,7 @@ static void handleSCISignal(GtkWidget *, gint /*wParam*/, SCNotification *notifi
 	int code = notification->nmhdr.code;
 	std::string signal = signals[code];
     if (!signal.empty()) {
-        std::cout << "Calling handler for " << signal << "! (if any)\n";
+        //std::cout << "Calling handler for " << signal << "! (if any)\n";
         v8::Persistent<v8::Function> handler = handlers.at(signal);
         v8::Local<v8::Object> global = context->Global();
         v8::Handle<v8::Value> args[2];
@@ -84,6 +84,8 @@ int main(int argc, char **argv) {
     /* TODO Take this out of here */
     signals[SCN_CHARADDED] = "charAdded";
     signals[SCN_KEY] = "key";
+    signals[SCN_AUTOCCHARDELETED] = "autoCCharDeleted";
+    signals[SCN_AUTOCCANCELLED] = "autoCCancelled";
     /* TODO add these:
         (Keyboard commands)
         (Key bindings)
@@ -165,6 +167,13 @@ int main(int argc, char **argv) {
 	scintilla_send_message(sciConsole, SCI_INSERTTEXT, 0, (sptr_t) ">>> ");
 
 	scintilla_send_message(sciInfo, SCI_SETREADONLY, 1, 0);
+
+	/* UNMAP ESC */
+    //scintilla_send_message(sciEditor, SCI_CLEARCMDKEY, (long) SCK_ESCAPE, (long) SCK_ESCAPE);
+	//scintilla_send_message(sciEditor, SCI_CLEARCMDKEY, (long) (SCK_ESCAPE + (1 << 16)), (long) (SCK_ESCAPE + (1 << 16)));
+	//scintilla_send_message(sciEditor, SCI_CLEARCMDKEY, (long) (SCK_ESCAPE + (2 << 16)), (long) (SCK_ESCAPE + (2 << 16)));
+	//scintilla_send_message(sciEditor, SCI_CLEARCMDKEY, (long) (SCK_ESCAPE + (3 << 16)), (long) (SCK_ESCAPE + (3 << 16)));
+	//scintilla_send_message(sciEditor, SCI_CLEARALLCMDKEYS, 0, 0);
 
 	/***************/
 

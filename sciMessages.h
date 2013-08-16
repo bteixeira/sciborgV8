@@ -152,6 +152,12 @@ static v8::Handle<v8::Value> SEND_SCI_SETCARETPERIOD(const v8::Arguments& args) 
 	scintilla_send_message(sci, SCI_SETCARETPERIOD, millis, 0);
 }
 
+static v8::Handle<v8::Value> SEND_SCI_SETCARETWIDTH(const v8::Arguments& args) {
+    int width = args[0]->Int32Value();
+    ScintillaObject* sci = getSciFromArgs(args);
+	scintilla_send_message(sci, SCI_SETCARETWIDTH, width, 0);
+}
+
 static v8::Handle<v8::Value> SEND_SCI_SETLEXER(const v8::Arguments& args) {
     int lexer = args[0]->Int32Value();
 	v8::Local<v8::External> ext = v8::Local<v8::External>::Cast(args.Data());
@@ -178,6 +184,7 @@ static void makeFunsAvailable(v8::Handle<v8::ObjectTemplate> context, ScintillaO
 	context->Set(v8::String::New("setCaretFore"), v8::FunctionTemplate::New(SEND_SCI_SETCARETFORE, ext));
 	context->Set(v8::String::New("setCaretPeriod"), v8::FunctionTemplate::New(SEND_SCI_SETCARETPERIOD, ext));
 	context->Set(v8::String::New("setCaretStyle"), v8::FunctionTemplate::New(SEND_SCI_SETCARETSTYLE, ext));
+	context->Set(v8::String::New("setCaretWidth"), v8::FunctionTemplate::New(SEND_SCI_SETCARETWIDTH, ext));
 
 	context->Set(v8::String::New("setLexer"), v8::FunctionTemplate::New(SEND_SCI_SETLEXER, ext));
 	context->Set(v8::String::New("setKeywords"), v8::FunctionTemplate::New(SEND_SCI_SETKEYWORDS, ext));
