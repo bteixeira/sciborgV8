@@ -1,5 +1,31 @@
+//var dictionary = ['Amanda', 'asymptotic', 'babe', 'beautiful', 'butter', 'butterfly'];
+var dictionary = ['break',
+'case',
+'catch',
+'continue',
+'debugger',
+'default',
+'delete',
+'do',
+'else',
+'finally',
+'for',
+'function',
+'if',
+'in',
+'instanceof',
+'new',
+'return',
+'switch',
+'this',
+'throw',
+'try',
+'typeof',
+'var',
+'void',
+'while',
+'with'];
 
-var dictionary = 'Amanda asymptotic babe beautiful butter butterfly';
 var log = BORG.log;
 
 function isLetter(char) {
@@ -7,6 +33,33 @@ function isLetter(char) {
 }
 
 var soFar = '';
+var possible = []
+
+function checkPossible(prefix) {
+	var i;
+	possible = [];
+	for (i = 0 ; i < dictionary.length ; i++) {
+		if (dictionary[i].indexOf(prefix) === 0) {
+			possible.push(dictionary[i]);
+		}
+	}
+}
+
+function openAutoC() {
+	BORG.editor.autoCShow(soFar.length, possible.join(' '));
+}
+
+function doAutoC() {
+	if (soFar && soFar.length > 0) {
+		checkPossible(soFar);
+	} else {
+		possible = [];
+	}
+	if (possible.length > 0) {
+		openAutoC();
+	}
+}
+
 BORG.editor.on('charAdded', function(code) {
 	char = String.fromCharCode(code);
 //	BORG.log(char + ' (' + soFar + ')');
@@ -15,7 +68,7 @@ BORG.editor.on('charAdded', function(code) {
 		soFar += char;
 		
 	//	BORG.log('calling autoc with ' + soFar.length + ',"' + dictionary + '"');
-		BORG.editor.autoCShow(soFar.length, dictionary);
+		//BORG.editor.autoCShow(soFar.length, dictionary);
 	} else {
 		soFar = '';
 	//	BORG.log('so far reset');
@@ -23,25 +76,46 @@ BORG.editor.on('charAdded', function(code) {
 	
 	log('so far:' + soFar);
 	
+	doAutoC();
+	
 });
 
 BORG.editor.on('key', function(key, mod) {
-	//BORG.log('key: ' + key);
+	BORG.log('key: ' + key);
 	//BORG.log('mod: ' + mod);
 	if (key === 83 && mod === 2) {
 		BORG.save();
 	}
+	/*
+	if (key === 81 && mod === 2) {
+		var pos = BORG.editor.getCurrentPos();
+		BORG.editor.insertText(pos, '-');
+	}
+	*/
 });
 
 BORG.editor.on('autoCCharDeleted', function() {
 //	BORG.log('autoCCharDeleted !!!');
 	soFar = soFar.substr(0, soFar.length - 1);
 	log('so far:' + soFar);
+	doAutoC();
 });
 
 BORG.editor.on('autoCCancelled', function() {
+	/**/
 	soFar = '';
 	log('so far:' + soFar);
+	/**/
+});
+
+BORG.editor.on('autoCSelection', function() {
+	soFar = '';
+	log('ACCEPTED! so far:' + soFar);
+	//BORG.editor.addText('D');
+	var pos = BORG.editor.getCurrentPos();
+	BORG.editor.insertText(8, ' ');
+	BORG.editor.setCurrentPos(pos + 1);
+	log('POS:' + pos);
 });
 
 /**/
@@ -74,4 +148,6 @@ BORG.consolePane.setReadOnly(true);
 
 //BORG.editor.autoCShow(1, 'aaa aab aac');
 
+
+BORG.editor.setKeywords('function var');
 

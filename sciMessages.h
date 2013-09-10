@@ -165,6 +165,47 @@ static v8::Handle<v8::Value> SEND_SCI_SETLEXER(const v8::Arguments& args) {
 	scintilla_send_message(sci, SCI_SETLEXER, lexer, 0);
 }
 
+/*
+static v8::Handle<v8::Value> SEND_SCI_ADDTEXT(const v8::Arguments& args) {
+    v8::String::AsciiValue text(args[0]);
+	v8::Local<v8::External> ext = v8::Local<v8::External>::Cast(args.Data());
+	ScintillaObject* sci = (ScintillaObject*) (ext->Value());
+	int len = text.length();
+	//std::cout << "adding text:" << *text << ":" << len << "\n";
+	//scintilla_send_message(sci, SCI_ADDTEXT, (sptr_t) *text, len);
+	scintilla_send_message(sci, SCI_ADDTEXT, (sptr_t) "d", 1);
+	std::cout << "adding text:" << *text << ":" << len << "\n";
+}
+*/
+
+static v8::Handle<v8::Value> SEND_SCI_GETCURRENTPOS(const v8::Arguments& args) {
+    v8::Local<v8::External> ext = v8::Local<v8::External>::Cast(args.Data());
+	ScintillaObject* sci = (ScintillaObject*) (ext->Value());
+    int pos = scintilla_send_message(sci, SCI_GETCURRENTPOS, 0, 0);
+    std::cout << "POS:" << pos << "\n";
+    v8::Handle<v8::Number> val = v8::Number::New(pos);
+    return val;
+}
+
+static v8::Handle<v8::Value> SEND_SCI_SETCURRENTPOS(const v8::Arguments& args) {
+    int pos = args[0]->Int32Value();
+	v8::Local<v8::External> ext = v8::Local<v8::External>::Cast(args.Data());
+	ScintillaObject* sci = (ScintillaObject*) (ext->Value());
+	scintilla_send_message(sci, SCI_SETCURRENTPOS, pos, 0);
+	std::cout << "setting position:" << pos << "\n";
+}
+
+static v8::Handle<v8::Value> SEND_SCI_INSERTTEXT(const v8::Arguments& args) {
+    int pos = args[0]->Int32Value();
+    v8::String::AsciiValue text(args[1]);
+	v8::Local<v8::External> ext = v8::Local<v8::External>::Cast(args.Data());
+	ScintillaObject* sci = (ScintillaObject*) (ext->Value());
+	//std::cout << "adding text:" << *text << ":" << len << "\n";
+	//scintilla_send_message(sci, SCI_ADDTEXT, (sptr_t) *text, len);
+	scintilla_send_message(sci, SCI_INSERTTEXT, pos, (sptr_t) *text);
+	std::cout << "inserting text:" << *text << ":" << pos << "\n";
+}
+
 /******************************************************************************/
 
 static void makeFunsAvailable(v8::Handle<v8::ObjectTemplate> context, ScintillaObject* sci) {
@@ -192,5 +233,11 @@ static void makeFunsAvailable(v8::Handle<v8::ObjectTemplate> context, ScintillaO
 	context->Set(v8::String::New("setReadOnly"), v8::FunctionTemplate::New(SEND_SCI_SETREADONLY, ext));
 
 	context->Set(v8::String::New("autoCShow"), v8::FunctionTemplate::New(SEND_SCI_AUTOCSHOW, ext));
+
+	//context->Set(v8::String::New("addText"), v8::FunctionTemplate::New(SEND_SCI_ADDTEXT, ext));
+
+	context->Set(v8::String::New("getCurrentPos"), v8::FunctionTemplate::New(SEND_SCI_GETCURRENTPOS, ext));
+	context->Set(v8::String::New("setCurrentPos"), v8::FunctionTemplate::New(SEND_SCI_SETCURRENTPOS, ext));
+	context->Set(v8::String::New("insertText"), v8::FunctionTemplate::New(SEND_SCI_INSERTTEXT, ext));
 
 }

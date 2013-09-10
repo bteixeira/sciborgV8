@@ -69,7 +69,7 @@ static void handleSCISignal(GtkWidget *, gint /*wParam*/, SCNotification *notifi
 	int code = notification->nmhdr.code;
 	std::string signal = signals[code];
     if (!signal.empty()) {
-        //std::cout << "Calling handler for " << signal << "! (if any)\n";
+        std::cout << "Calling handler for " << signal << "! (if any)\n";
         v8::Persistent<v8::Function> handler = handlers.at(signal);
         v8::Local<v8::Object> global = context->Global();
         v8::Handle<v8::Value> args[2];
@@ -86,6 +86,7 @@ int main(int argc, char **argv) {
     signals[SCN_KEY] = "key";
     signals[SCN_AUTOCCHARDELETED] = "autoCCharDeleted";
     signals[SCN_AUTOCCANCELLED] = "autoCCancelled";
+    signals[SCN_AUTOCSELECTION] = "autoCSelection";
     /* TODO add these:
         (Keyboard commands)
         (Key bindings)
