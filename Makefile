@@ -14,9 +14,9 @@ all: sciborg
 
 .cpp.o:
 	$(CXX) `pkg-config --cflags gtk+-2.0` $(INCLUDEDIRS) $(CXXFLAGS) -c $< -o $@
-build-sciborg: $(V8_OUTPUT) scintilla/bin/scintilla.a sciborg.o sciMessages.o $(LEXEROBJS)
-	g++ -DGTK $^ -o $@ v8/out/native/obj.target/tools/gyp/libv8_base.x64.a v8/out/native/obj.target/tools/gyp/libv8_snapshot.a -lpthread -lstdc++ `pkg-config --libs gtk+-2.0 gthread-2.0`
-sciborg: v8 build-sciborg
+build-sciborg: sciborg.o $(LEXEROBJS) scintilla/bin/scintilla.a
+	g++ -DGTK sciborg.o $(LEXEROBJS) scintilla/bin/scintilla.a -o sciborg v8/out/native/obj.target/tools/gyp/libv8_base.x64.a v8/out/native/obj.target/tools/gyp/libv8_snapshot.a -lpthread -lstdc++ `pkg-config --libs gtk+-2.0 gthread-2.0`
+sciborg: build-sciborg
 
 clean: clean-scintilla clean-v8
 	rm -rf sciborg *.o
