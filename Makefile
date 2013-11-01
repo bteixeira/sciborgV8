@@ -1,13 +1,12 @@
 
-.PHONY: clean gyp
+.PHONY: all clean clean-scintilla clean-v8
 
 .SUFFIXES: .cpp .o .h .a
 
-INCLUDEDIRS=-Iscintilla/include -Iv8-3.20.0/include
+INCLUDEDIRS=-Iscintilla/include -Iv8/include
 CXXFLAGS= -DGTK -DSCI_LEXER -W -Wall
 LEXEROBJS=$(wildcard scintilla/gtk/Lex*.o)
-#V8_OUTPUT=v8_bin_debug/libv8_base.x64.a v8_bin_debug/libv8_snapshot.a
-V8_OUTPUT=v8-3.20.0/out/x64.debug/obj.target/tools/gyp/libv8_base.x64.a v8-3.20.0/out/x64.debug/obj.target/tools/gyp/libv8_snapshot.a
+V8_OUTPUT=v8/out/x64.debug/obj.target/tools/gyp/libv8_base.x64.a v8/out/x64.debug/obj.target/tools/gyp/libv8_snapshot.a
 
 CXX=g++
 
@@ -27,11 +26,11 @@ clean-scintilla:
 	make clean -C scintilla/gtk
 
 clean-v8:
-	make clean -C v8-3.20.0
+	make clean -C v8
 
 $(V8_OUTPUT): v8/build/gyp
-	make x64.debug -C v8-3.20.0
+	make x64.debug -C v8
 
 v8/build/gyp:
-	make dependencies -C v8-3.20.0
+	make dependencies -C v8
 
