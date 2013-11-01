@@ -220,6 +220,7 @@ class WeakReferenceCallbacks {
     *(static_cast<T* volatile*>(0)) = static_cast<S*>(0);      \
   }
 
+#define V8_USE_UNSAFE_HANDLES
 
 /**
  * An object reference managed by the v8 garbage collector.
