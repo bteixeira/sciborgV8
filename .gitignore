@@ -5,6 +5,3 @@
 sciborg
 *.o
 *.a
-
-# V8 source
-v8
