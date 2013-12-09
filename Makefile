@@ -13,9 +13,9 @@ CXX=g++
 all: sciborg
 
 .cpp.o:
-	$(CXX) `pkg-config --cflags gtk+-2.0` $(INCLUDEDIRS) $(CXXFLAGS) -c $< -o $@
+	$(CXX) `pkg-config --cflags gtk+-2.0` -v -da -Q -g -O0 $(INCLUDEDIRS) $(CXXFLAGS) -c $< -o $@
 sciborg: sciborg.o $(LEXEROBJS) scintilla/bin/scintilla.a $(V8_OUTPUT)
-	$(CXX) -DGTK $^ -o $@ -lpthread -lstdc++ `pkg-config --libs gtk+-2.0 gthread-2.0`
+	$(CXX) -DGTK -v -da -Q -g -O0 $^ -o $@ -lpthread -lstdc++ `pkg-config --libs gtk+-2.0 gthread-2.0`
 clean: clean-scintilla clean-v8
 	rm -f sciborg *.o
 

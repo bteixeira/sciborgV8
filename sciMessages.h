@@ -1,7 +1,10 @@
 
 static ScintillaObject* getSciFromArgs(const v8::FunctionCallbackInfo<v8::Value>& args) {
+    printf("getting it\n");
     v8::Local<v8::External> ext = v8::Local<v8::External>::Cast(args.Data());
+    printf("got it\n");
 	ScintillaObject* sci = (ScintillaObject*) (ext->Value());
+	printf("done\n");
 	return sci;
 }
 
@@ -55,9 +58,10 @@ static void SEND_SCI_STYLESETFONT(const v8::FunctionCallbackInfo<v8::Value>& arg
 /******************************************************************************/
 
 
-
+//v8::String::AsciiValue keywords;
 /* TODO DOES NOT SEEM TO WORK IF THE TEXT IS EMPTY */
-static v8::Handle<v8::Value> SEND_SCI_SETKEYWORDS(const v8::Arguments& args) {
+//static v8::Handle<v8::Value> SEND_SCI_SETKEYWORDS(const v8::Arguments& args) {
+static void SEND_SCI_SETKEYWORDS(const v8::FunctionCallbackInfo<v8::Value>& args) {
     v8::String::AsciiValue keywords(args[0]);
     printf("setting keywords [%s]\n", *keywords);
     ScintillaObject* sci = getSciFromArgs(args);

@@ -1,30 +1,32 @@
 //var dictionary = ['Amanda', 'asymptotic', 'babe', 'beautiful', 'butter', 'butterfly'];
-var dictionary = ['break',
-'case',
-'catch',
-'continue',
-'debugger',
-'default',
-'delete',
-'do',
-'else',
-'finally',
-'for',
-'function',
-'if',
-'in',
-'instanceof',
-'new',
-'return',
-'switch',
-'this',
-'throw',
-'try',
-'typeof',
-'var',
-'void',
-'while',
-'with'];
+var dictionary = [
+    'break',
+    'case',
+    'catch',
+    'continue',
+    'debugger',
+    'default',
+    'delete',
+    'do',
+    'else',
+    'finally',
+    'for',
+    'function',
+    'if',
+    'in',
+    'instanceof',
+    'new',
+    'return',
+    'switch',
+    'this',
+    'throw',
+    'try',
+    'typeof',
+    'var',
+    'void',
+    'while',
+    'with'
+];
 
 var log = BORG.log;
 
@@ -149,5 +151,5 @@ BORG.consolePane.setReadOnly(true);
 //BORG.editor.autoCShow(1, 'aaa aab aac');
 
 
-BORG.editor.setKeywords('function var');
+BORG.editor.setKeywords(dictionary.join(' '));
 
