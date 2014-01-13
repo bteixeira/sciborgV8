@@ -13,16 +13,13 @@ Project Goals
 
 Prerequisites
 -------------
-SciborgV8 currently builds only for **Linux/GTK**.
+SciborgV8 currently builds only for **Linux/GTK**.  
 I plan to add support for Windows. Mac OS will be trickier, but other editors have done it before.
 
-SciborgV8 depends on **Scintilla** and **V8**.
-Scintilla 3.3.3 source code is included.
-V8 is not included due to its large size.
-Make will automatically download the current version of V8.
-For this, you need **Git** installed.
-
-V8 in turn requires **Gyp** to build. This is also obtained automatically.
+SciborgV8 depends on **Scintilla** and **V8**.  
+Scintilla 3.3.3 source code is included.  
+V8 is included as well, version 3.20.0.  
+V8 requires **Gyp** to build. This is obtained automatically. For that, git has to be installed.
 
 Building
 --------
