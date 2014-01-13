@@ -14,7 +14,7 @@ Project Goals
 Prerequisites
 -------------
 SciborgV8 currently builds only for **Linux/GTK**.
-I plan to add support for Mac/Cocoa and Windows, although in the current state it should be easy to adapt.
+I plan to add support for Windows. Mac OS will be trickier, but other editors have done it before.
 
 SciborgV8 depends on **Scintilla** and **V8**.
 Scintilla 3.3.3 source code is included.
@@ -24,10 +24,29 @@ For this, you need **Git** installed.
 
 V8 in turn requires **Gyp** to build. This is also obtained automatically.
 
+Building
+--------
+To build Sciborg for GTK+ 2 (tested on Ubuntu 12.10)
+
+0. Clone the project
+
+        $ git clone https://github.com/bteixeira/sciborgV8.git
+
+0. Install the `libgtk2.0-dev` package, e.g.:
+
+        $ sudo apt-get install libgtk2.0-dev
+
+0. Call `make` in the root directory
+
+        $ cd sciborgV8
+        $ make
+
 Heroes Needed
 -------------
 I started this project because my expertise is in Javascript.
+
+
 My C++ skills have been dwindling in the last few years.
 If you're a *real* C++ dev and think this is a noble project, your help will be much appreciated.
-While looking at the code, you will probably find lots of room for improvement in the way things are done, right down to the simplest things. Even the makefile is in desperate need of work.
 
+While looking at the code, you will probably find lots of room for improvement in the way things are done, right down to the simplest things. Even the makefile is in desperate need of work.
